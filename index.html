@@ -182,6 +182,12 @@
   .field-row {
     margin-bottom: 12px;
   }
+  .adventure-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .adventure-fields .field-row { margin-bottom: 0; }
 
   button {
     font-family: var(--font-body);
@@ -607,6 +613,7 @@
     font-weight: 500;
     color: var(--navy);
     writing-mode: vertical-rl;
+    transform: rotate(180deg);
     letter-spacing: 0.03em;
     flex-shrink: 0;
     display: flex;
@@ -688,15 +695,15 @@
   .bed-slot .placed-chip {
     position: relative;
     z-index: 1;
-    width: 135px;
+    width: 108px;
     height: 60px;
     box-sizing: border-box;
     flex-shrink: 0;
     background: rgba(255,255,255,0.94);
     border-color: var(--house-accent);
-    padding: 0 10px;
+    padding: 0 9px;
     font-size: 1.3rem;
-    gap: 7px;
+    gap: 6px;
     white-space: nowrap;
     overflow: hidden;
   }
@@ -937,9 +944,9 @@
   }
 
   .save-card {
-    max-width: 760px;
+    max-width: 1100px;
     text-align: left;
-    padding: 40px 48px;
+    padding: 36px 48px;
   }
   .save-title {
     font-family: var(--font-heading);
@@ -960,18 +967,33 @@
     font-family: var(--font-body);
     color: var(--text-dark);
     line-height: 1.55;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 36px;
+    text-align: left;
+  }
+  .save-adventure {
+    width: 100%;
+    text-align: center;
+    font-family: var(--font-heading);
+    font-style: italic;
+    color: var(--text-med);
+    letter-spacing: 0.04em;
+    margin: -10px 0 18px 0;
   }
   .save-house {
-    margin-bottom: 22px;
+    flex: 1 1 0;
+    min-width: 0;
   }
-  .save-house:last-child { margin-bottom: 8px; }
   .save-house-title {
     font-family: var(--font-heading);
     font-weight: 500;
-    font-size: 1.45rem;
+    font-size: 1.4rem;
     color: var(--navy);
     margin: 0 0 4px 0;
     letter-spacing: 0.02em;
+    text-align: left;
   }
   .save-house-meta {
     font-family: var(--font-body);
@@ -979,6 +1001,7 @@
     font-size: 0.95rem;
     color: var(--text-med);
     margin-bottom: 12px;
+    text-align: left;
   }
   .save-rooms {
     display: grid;
@@ -989,6 +1012,7 @@
   }
   .save-room {
     padding: 4px 0 4px 14px;
+    text-align: left;
   }
   .save-room-name {
     font-family: var(--font-heading);
@@ -996,10 +1020,12 @@
     font-size: 1.05rem;
     color: var(--navy);
     margin: 0 0 2px 0;
+    text-align: left;
   }
   .save-room-line {
     font-size: 1rem;
     padding: 1px 0;
+    text-align: left;
   }
   .save-room-line .marker {
     display: inline-block;
@@ -1036,7 +1062,7 @@
     }
     .save-actions { display: none !important; }
     .save-title { border-bottom: 1px solid #888 !important; }
-    @page { margin: 16mm; }
+    @page { size: landscape; margin: 14mm; }
   }
 </style>
 </head>
@@ -1058,15 +1084,17 @@
       <div class="section-header">
         <span class="section-title">Adventure</span>
       </div>
-      <div class="field-row">
-        <label class="field-label" for="advTitle">Title</label>
-        <input type="text" id="advTitle" placeholder="France 2026" maxlength="40" autocomplete="off" />
+      <div class="adventure-fields">
+        <div class="field-row">
+          <label class="field-label" for="advTitle">Title</label>
+          <input type="text" id="advTitle" placeholder="France 2026" maxlength="40" autocomplete="off" />
+        </div>
+        <div class="field-row">
+          <label class="field-label" for="advSubtitle">Subtitle</label>
+          <input type="text" id="advSubtitle" placeholder="A summer adventure featuring …" maxlength="100" autocomplete="off" />
+        </div>
       </div>
-      <div class="field-row">
-        <label class="field-label" for="advSubtitle">Subtitle</label>
-        <input type="text" id="advSubtitle" placeholder="A summer adventure featuring …" maxlength="100" autocomplete="off" />
-        <p class="help-text">Leave blank to auto-generate from player names.</p>
-      </div>
+      <p class="help-text" style="margin-top:8px;">Leave subtitle blank to auto-generate from player names.</p>
     </div>
 
     <div class="section-card" id="housesCard">
@@ -1150,6 +1178,7 @@
 <div class="overlay save-overlay" id="saveModal">
   <div class="card save-card">
     <input type="text" id="saveTitle" class="save-title" />
+    <div class="save-adventure" id="saveAdventure"></div>
     <div class="save-body" id="saveBody"></div>
     <div class="save-actions">
       <button class="primary" id="savePrintBtn">Print</button>
@@ -1189,32 +1218,47 @@ function paletteForHouse(index) {
   return HOUSE_PALETTES[index % HOUSE_PALETTES.length];
 }
 
+const SPRINKLES_A = [
+  { x: 25, y: 22, s: 5, r: -10, o: 0.62 },
+  { x: 122, y: 12, s: 4, r: 20, o: 0.68 },
+  { x: 148, y: 92, s: 6, r: 5, o: 0.74 },
+  { x: 208, y: 88, s: 4, r: 15, o: 0.78 },
+  { x: 75, y: 48, s: 5, r: -5, o: 0.75 },
+  { x: 195, y: 52, s: 5, r: 0, o: 0.66 },
+  { x: 168, y: 88, s: 4, r: 8, o: 0.72 },
+  { x: 12, y: 78, s: 3, r: 0, o: 0.80 },
+];
+
+function withSprinkles(items, emoji) {
+  return items.concat(SPRINKLES_A.map(p => Object.assign({ e: emoji }, p)));
+}
+
 const BEDDING_THEMES = [
   { // 1 pink hearts
-    color: '#FDE3EE', vbW: 220, vbH: 100, items: [
+    color: '#FDE3EE', vbW: 220, vbH: 100, items: withSprinkles([
       { e: '💗', x: 42, y: 50, s: 64, r: -15, o: 0.28 },
       { e: '💗', x: 132, y: 28, s: 30, r: 12, o: 0.42 },
       { e: '💗', x: 180, y: 72, s: 22, r: -8, o: 0.50 },
       { e: '💗', x: 92, y: 82, s: 16, r: 22, o: 0.55 },
-      { e: '💗', x: 200, y: 22, s: 11, r: -20, o: 0.62 },
-      { e: '💗', x: 82, y: 18, s: 9, r: 5, o: 0.68 },
-      { e: '💗', x: 160, y: 48, s: 6, r: 30, o: 0.76 },
+      { e: '💗', x: 200, y: 22, s: 11, r: -20, o: 0.58 },
+      { e: '💗', x: 82, y: 18, s: 9, r: 5, o: 0.62 },
+      { e: '💗', x: 160, y: 48, s: 6, r: 30, o: 0.70 },
       { e: '💗', x: 112, y: 60, s: 4, r: 0, o: 0.78 },
-      { e: '💗', x: 50, y: 90, s: 7, r: 15, o: 0.72 },
-    ],
+      { e: '💗', x: 50, y: 90, s: 7, r: 15, o: 0.68 },
+    ], '💗'),
   },
   { // 2 mint stars
-    color: '#DCEFE0', vbW: 220, vbH: 100, items: [
+    color: '#DCEFE0', vbW: 220, vbH: 100, items: withSprinkles([
       { e: '⭐', x: 44, y: 52, s: 60, r: -10, o: 0.28 },
       { e: '⭐', x: 138, y: 26, s: 26, r: 22, o: 0.45 },
       { e: '⭐', x: 178, y: 68, s: 20, r: -16, o: 0.52 },
       { e: '✨', x: 80, y: 18, s: 18, r: 0, o: 0.50 },
       { e: '⭐', x: 96, y: 80, s: 14, r: 18, o: 0.55 },
-      { e: '⭐', x: 198, y: 22, s: 10, r: -10, o: 0.65 },
+      { e: '⭐', x: 198, y: 22, s: 10, r: -10, o: 0.62 },
       { e: '✨', x: 120, y: 60, s: 7, r: 0, o: 0.68 },
       { e: '✨', x: 158, y: 48, s: 5, r: 0, o: 0.78 },
       { e: '⭐', x: 50, y: 90, s: 4, r: 30, o: 0.72 },
-    ],
+    ], '⭐'),
   },
   { // 3 lavender dots
     color: '#E8DBF2', vbW: 220, vbH: 100, dotColor: 'rgba(123,75,148,0.55)', dots: [
@@ -1230,10 +1274,18 @@ const BEDDING_THEMES = [
       { x: 196, y: 50, r: 2 },
       { x: 88, y: 36, r: 2.5 },
       { x: 56, y: 90, r: 3.5 },
+      { x: 25, y: 60, r: 1.5 },
+      { x: 75, y: 18, r: 1.2 },
+      { x: 110, y: 14, r: 1.4 },
+      { x: 168, y: 84, r: 1.6 },
+      { x: 208, y: 80, r: 1.2 },
+      { x: 140, y: 60, r: 1.8 },
+      { x: 12, y: 38, r: 1.3 },
+      { x: 38, y: 88, r: 1.5 },
     ],
   },
   { // 4 peach rainbows
-    color: '#FDE3D1', vbW: 220, vbH: 100, items: [
+    color: '#FDE3D1', vbW: 220, vbH: 100, items: withSprinkles([
       { e: '🌈', x: 44, y: 52, s: 60, r: -10, o: 0.30 },
       { e: '🌈', x: 138, y: 28, s: 26, r: 14, o: 0.45 },
       { e: '🌈', x: 180, y: 70, s: 22, r: -8, o: 0.50 },
@@ -1243,10 +1295,10 @@ const BEDDING_THEMES = [
       { e: '🌈', x: 158, y: 50, s: 7, r: 0, o: 0.70 },
       { e: '🌈', x: 118, y: 60, s: 5, r: -5, o: 0.78 },
       { e: '🌈', x: 50, y: 90, s: 4, r: 15, o: 0.72 },
-    ],
+    ], '🌈'),
   },
   { // 5 sky clouds
-    color: '#DDEAF5', vbW: 220, vbH: 100, items: [
+    color: '#DDEAF5', vbW: 220, vbH: 100, items: withSprinkles([
       { e: '☁️', x: 44, y: 52, s: 62, r: 0, o: 0.28 },
       { e: '☁️', x: 140, y: 28, s: 28, r: 0, o: 0.45 },
       { e: '☁️', x: 180, y: 72, s: 22, r: 0, o: 0.52 },
@@ -1256,10 +1308,10 @@ const BEDDING_THEMES = [
       { e: '☁️', x: 158, y: 50, s: 7, r: 0, o: 0.72 },
       { e: '☁️', x: 118, y: 60, s: 5, r: 0, o: 0.78 },
       { e: '☁️', x: 50, y: 90, s: 4, r: 0, o: 0.70 },
-    ],
+    ], '☁️'),
   },
   { // 6 lemon unicorns
-    color: '#FBEEC2', vbW: 220, vbH: 100, items: [
+    color: '#FBEEC2', vbW: 220, vbH: 100, items: withSprinkles([
       { e: '🦄', x: 44, y: 52, s: 58, r: -12, o: 0.28 },
       { e: '🦄', x: 138, y: 28, s: 26, r: 10, o: 0.45 },
       { e: '🦄', x: 180, y: 70, s: 22, r: -8, o: 0.50 },
@@ -1269,10 +1321,10 @@ const BEDDING_THEMES = [
       { e: '✨', x: 158, y: 50, s: 12, r: 0, o: 0.55 },
       { e: '✨', x: 118, y: 62, s: 5, r: 0, o: 0.80 },
       { e: '✨', x: 50, y: 90, s: 4, r: 0, o: 0.72 },
-    ],
+    ], '✨'),
   },
   { // 7 lilac butterflies
-    color: '#EEDFF7', vbW: 220, vbH: 100, items: [
+    color: '#EEDFF7', vbW: 220, vbH: 100, items: withSprinkles([
       { e: '🦋', x: 44, y: 52, s: 60, r: -14, o: 0.30 },
       { e: '🦋', x: 138, y: 28, s: 26, r: 20, o: 0.45 },
       { e: '🦋', x: 180, y: 72, s: 22, r: -10, o: 0.50 },
@@ -1282,10 +1334,10 @@ const BEDDING_THEMES = [
       { e: '🦋', x: 158, y: 50, s: 7, r: 25, o: 0.72 },
       { e: '🦋', x: 118, y: 60, s: 5, r: -15, o: 0.78 },
       { e: '🦋', x: 50, y: 90, s: 4, r: 20, o: 0.72 },
-    ],
+    ], '🦋'),
   },
   { // 8 sage leaves
-    color: '#DCEAD7', vbW: 220, vbH: 100, items: [
+    color: '#DCEAD7', vbW: 220, vbH: 100, items: withSprinkles([
       { e: '🍃', x: 42, y: 52, s: 56, r: -25, o: 0.30 },
       { e: '🌿', x: 138, y: 28, s: 28, r: 0, o: 0.40 },
       { e: '🍃', x: 178, y: 70, s: 22, r: -15, o: 0.50 },
@@ -1295,10 +1347,10 @@ const BEDDING_THEMES = [
       { e: '🍃', x: 158, y: 50, s: 7, r: 60, o: 0.70 },
       { e: '🌿', x: 118, y: 62, s: 5, r: 0, o: 0.75 },
       { e: '🍃', x: 50, y: 90, s: 4, r: 15, o: 0.72 },
-    ],
+    ], '🍃'),
   },
   { // 9 aqua waves
-    color: '#D6EBED', vbW: 220, vbH: 100, items: [
+    color: '#D6EBED', vbW: 220, vbH: 100, items: withSprinkles([
       { e: '🌊', x: 44, y: 52, s: 60, r: 0, o: 0.28 },
       { e: '🌊', x: 138, y: 28, s: 26, r: 0, o: 0.45 },
       { e: '🌊', x: 178, y: 70, s: 22, r: 0, o: 0.50 },
@@ -1308,10 +1360,10 @@ const BEDDING_THEMES = [
       { e: '🌊', x: 158, y: 50, s: 7, r: 0, o: 0.72 },
       { e: '🌊', x: 116, y: 60, s: 5, r: 0, o: 0.78 },
       { e: '🌊', x: 50, y: 90, s: 4, r: 0, o: 0.70 },
-    ],
+    ], '🌊'),
   },
   { // 10 mint spirals
-    color: '#D9ECE7', vbW: 220, vbH: 100, items: [
+    color: '#D9ECE7', vbW: 220, vbH: 100, items: withSprinkles([
       { e: '🌀', x: 42, y: 52, s: 60, r: 0, o: 0.28 },
       { e: '🌀', x: 138, y: 28, s: 26, r: 0, o: 0.45 },
       { e: '🌀', x: 178, y: 70, s: 22, r: 0, o: 0.50 },
@@ -1321,10 +1373,10 @@ const BEDDING_THEMES = [
       { e: '🌀', x: 158, y: 50, s: 7, r: 0, o: 0.72 },
       { e: '🌀', x: 116, y: 60, s: 5, r: 0, o: 0.78 },
       { e: '🌀', x: 50, y: 90, s: 4, r: 0, o: 0.68 },
-    ],
+    ], '🌀'),
   },
   { // 11 cream cherries
-    color: '#FBE4D8', vbW: 220, vbH: 100, items: [
+    color: '#FBE4D8', vbW: 220, vbH: 100, items: withSprinkles([
       { e: '🍒', x: 42, y: 52, s: 56, r: -12, o: 0.30 },
       { e: '🍒', x: 138, y: 28, s: 24, r: 12, o: 0.45 },
       { e: '🍒', x: 178, y: 70, s: 20, r: -8, o: 0.50 },
@@ -1334,10 +1386,10 @@ const BEDDING_THEMES = [
       { e: '🍒', x: 158, y: 50, s: 6, r: 18, o: 0.75 },
       { e: '🍒', x: 116, y: 60, s: 5, r: -5, o: 0.78 },
       { e: '🍒', x: 50, y: 92, s: 4, r: 8, o: 0.70 },
-    ],
+    ], '🍒'),
   },
   { // 12 twilight moons
-    color: '#DDD8EE', vbW: 220, vbH: 100, items: [
+    color: '#DDD8EE', vbW: 220, vbH: 100, items: withSprinkles([
       { e: '🌙', x: 44, y: 52, s: 60, r: 0, o: 0.30 },
       { e: '🌙', x: 140, y: 28, s: 26, r: 25, o: 0.45 },
       { e: '🌙', x: 180, y: 72, s: 22, r: -20, o: 0.50 },
@@ -1347,10 +1399,10 @@ const BEDDING_THEMES = [
       { e: '✨', x: 158, y: 50, s: 7, r: 0, o: 0.78 },
       { e: '✨', x: 118, y: 60, s: 4, r: 0, o: 0.80 },
       { e: '🌙', x: 50, y: 92, s: 5, r: 30, o: 0.70 },
-    ],
+    ], '✨'),
   },
   { // 13 rose flowers
-    color: '#FBE0EA', vbW: 220, vbH: 100, items: [
+    color: '#FBE0EA', vbW: 220, vbH: 100, items: withSprinkles([
       { e: '🌸', x: 44, y: 52, s: 60, r: -8, o: 0.30 },
       { e: '🌸', x: 138, y: 28, s: 26, r: 15, o: 0.45 },
       { e: '🌸', x: 180, y: 72, s: 22, r: -10, o: 0.50 },
@@ -1360,10 +1412,10 @@ const BEDDING_THEMES = [
       { e: '🌸', x: 158, y: 50, s: 7, r: 22, o: 0.72 },
       { e: '🌸', x: 118, y: 60, s: 5, r: -8, o: 0.78 },
       { e: '🌸', x: 50, y: 92, s: 4, r: 12, o: 0.70 },
-    ],
+    ], '🌸'),
   },
   { // 14 icy snowflakes
-    color: '#DDE9F0', vbW: 220, vbH: 100, items: [
+    color: '#DDE9F0', vbW: 220, vbH: 100, items: withSprinkles([
       { e: '❄️', x: 42, y: 52, s: 56, r: 0, o: 0.30 },
       { e: '❄️', x: 138, y: 28, s: 24, r: 0, o: 0.45 },
       { e: '❄️', x: 178, y: 70, s: 20, r: 0, o: 0.50 },
@@ -1373,10 +1425,10 @@ const BEDDING_THEMES = [
       { e: '❄️', x: 158, y: 50, s: 7, r: 0, o: 0.72 },
       { e: '❄️', x: 116, y: 60, s: 5, r: 0, o: 0.78 },
       { e: '❄️', x: 50, y: 92, s: 4, r: 0, o: 0.68 },
-    ],
+    ], '❄️'),
   },
   { // 15 peach bows
-    color: '#FCE3D2', vbW: 220, vbH: 100, items: [
+    color: '#FCE3D2', vbW: 220, vbH: 100, items: withSprinkles([
       { e: '🎀', x: 42, y: 52, s: 58, r: -12, o: 0.30 },
       { e: '🎀', x: 138, y: 28, s: 24, r: 10, o: 0.45 },
       { e: '🎀', x: 178, y: 70, s: 22, r: -8, o: 0.50 },
@@ -1386,10 +1438,10 @@ const BEDDING_THEMES = [
       { e: '🎀', x: 158, y: 50, s: 7, r: 20, o: 0.75 },
       { e: '🎀', x: 116, y: 60, s: 5, r: -8, o: 0.78 },
       { e: '🎀', x: 50, y: 92, s: 4, r: 12, o: 0.68 },
-    ],
+    ], '🎀'),
   },
   { // 16 lemon suns
-    color: '#FBEAB8', vbW: 220, vbH: 100, items: [
+    color: '#FBEAB8', vbW: 220, vbH: 100, items: withSprinkles([
       { e: '☀️', x: 44, y: 52, s: 60, r: 0, o: 0.28 },
       { e: '☀️', x: 140, y: 28, s: 26, r: 0, o: 0.45 },
       { e: '☀️', x: 180, y: 72, s: 22, r: 0, o: 0.50 },
@@ -1399,7 +1451,7 @@ const BEDDING_THEMES = [
       { e: '☀️', x: 158, y: 50, s: 7, r: 0, o: 0.72 },
       { e: '☀️', x: 116, y: 60, s: 4, r: 0, o: 0.80 },
       { e: '☀️', x: 50, y: 92, s: 5, r: 0, o: 0.70 },
-    ],
+    ], '☀️'),
   },
 ];
 
@@ -2430,15 +2482,13 @@ function formatAuPair(a) {
 
 function renderSaveModal() {
   document.getElementById('saveTitle').value = todayLabel();
+  const adventureLine = document.getElementById('saveAdventure');
+  const advTitle = state.adventure.title.trim();
+  adventureLine.textContent = advTitle;
+  adventureLine.style.display = advTitle ? '' : 'none';
+
   const body = document.getElementById('saveBody');
   body.innerHTML = '';
-  const advTitle = state.adventure.title.trim();
-  if (advTitle) {
-    const sub = document.createElement('div');
-    sub.style.cssText = 'font-family: var(--font-heading); font-style: italic; color: var(--text-med); text-align: center; margin: -10px 0 22px 0; letter-spacing: 0.04em;';
-    sub.textContent = advTitle;
-    body.appendChild(sub);
-  }
 
   for (const house of state.houses) {
     const auPair = getAuPairForHouse(house.id);
