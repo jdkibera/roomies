@@ -280,17 +280,23 @@
   }
   .room-row {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    margin-bottom: 10px;
   }
-  .room-row input[type="text"] { flex: 1; min-width: 100px; }
-  .room-furniture {
+  .room-row input[type="text"] { width: 100%; min-width: 100px; }
+  .room-controls {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 18px;
     flex-wrap: wrap;
+    padding-left: 4px;
+  }
+  .furniture-pair {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
   }
   .furniture-label {
     font-size: 0.72rem;
@@ -898,8 +904,7 @@
     .overlay .card { padding: 24px 18px; }
     .adventure-header { padding: 20px 16px 16px 16px; }
     .adventure-header h1 { font-size: 1.8rem; }
-    .room-row { flex-direction: column; align-items: flex-start; }
-    .room-furniture { margin-top: 4px; }
+    .room-controls { gap: 14px; }
     .houses-grid { padding: 16px; gap: 16px; grid-template-columns: 1fr; }
     .house-card { padding: 14px; }
     .house-title { font-size: 1.2rem; }
@@ -1589,17 +1594,25 @@ function renderHouses() {
       rr.appendChild(rni);
 
       const furn = document.createElement('div');
-      furn.className = 'room-furniture';
+      furn.className = 'room-controls';
+
+      const bedsPair = document.createElement('span');
+      bedsPair.className = 'furniture-pair';
+      bedsPair.appendChild(makeStepper('bedStepper', room.id, room.beds, 0, 4, true));
       const bedsLblEl = document.createElement('span');
       bedsLblEl.className = 'furniture-label';
       bedsLblEl.textContent = 'Beds';
-      furn.appendChild(bedsLblEl);
-      furn.appendChild(makeStepper('bedStepper', room.id, room.beds, 0, 4, true));
+      bedsPair.appendChild(bedsLblEl);
+      furn.appendChild(bedsPair);
+
+      const cribsPair = document.createElement('span');
+      cribsPair.className = 'furniture-pair';
+      cribsPair.appendChild(makeStepper('cribStepper', room.id, room.cribs, 0, 3, true));
       const cribsLblEl = document.createElement('span');
       cribsLblEl.className = 'furniture-label';
       cribsLblEl.textContent = 'Cribs';
-      furn.appendChild(cribsLblEl);
-      furn.appendChild(makeStepper('cribStepper', room.id, room.cribs, 0, 3, true));
+      cribsPair.appendChild(cribsLblEl);
+      furn.appendChild(cribsPair);
 
       rr.appendChild(furn);
       rb.appendChild(rr);
