@@ -309,15 +309,24 @@
     white-space: nowrap;
   }
 
+  #kidsList, #auPairsList {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(275px, 1fr));
+    gap: 10px;
+  }
   .roommate-row {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-bottom: 8px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    margin: 0;
   }
-  .roommate-row input[type="text"] { flex: 1; min-width: 100px; }
-  .roommate-row input[type="number"] { width: 56px; }
+  .roommate-row input[type="text"] { flex: 1; min-width: 0; }
+  .roommate-row input[type="number"] { width: 56px; flex-shrink: 0; }
+  .section-header.sub-inline {
+    justify-content: flex-start;
+    gap: 14px;
+  }
 
   .avatar-btn {
     width: 50px; height: 50px;
@@ -585,19 +594,29 @@
     background: var(--cream);
     border: 1px solid var(--card-border);
     border-radius: 8px;
-    padding: 10px 12px;
+    padding: 10px 14px;
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 14px;
   }
   .room-cell-name {
     font-family: var(--font-heading);
     font-style: italic;
-    font-size: 1.3rem;
+    font-size: 1.35rem;
     font-weight: 500;
     color: var(--navy);
-    text-align: center;
-    letter-spacing: 0.02em;
+    writing-mode: vertical-rl;
+    letter-spacing: 0.03em;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 0;
+  }
+  .room-furniture {
+    flex: 1;
+    min-width: 0;
   }
   .room-cell-empty {
     font-family: var(--font-body);
@@ -630,38 +649,38 @@
 
   .bed-slot {
     position: relative;
-    height: 110px;
-    width: 250px;
+    height: 165px;
+    width: 375px;
     flex-shrink: 0;
     border: 1.5px solid #C5CFDA;
-    border-radius: 10px;
+    border-radius: 12px;
     background: var(--cream);
     box-shadow: 0 2px 6px rgba(30,58,95,0.08);
     display: grid;
     grid-template-rows: 1fr 1fr;
     align-items: center;
     justify-items: start;
-    padding: 8px 10px 8px 42px;
-    gap: 4px;
+    padding: 10px 14px 10px 62px;
+    gap: 6px;
     overflow: hidden;
   }
   .bed-pillow, .bed-blanket { pointer-events: none; }
   .bed-pillow {
     position: absolute;
-    left: 9px;
-    width: 24px;
-    height: 32px;
+    left: 14px;
+    width: 36px;
+    height: 48px;
     background: #FFFFFF;
     border: 1px solid rgba(0,0,0,0.08);
-    border-radius: 5px;
+    border-radius: 6px;
     box-shadow: 1px 1px 3px rgba(30,58,95,0.16);
     z-index: 0;
   }
-  .bed-pillow.top    { top: 8px; }
-  .bed-pillow.bottom { bottom: 8px; }
+  .bed-pillow.top    { top: 12px; }
+  .bed-pillow.bottom { bottom: 12px; }
   .bed-blanket {
     position: absolute;
-    top: 0; bottom: 0; left: 36px; right: 0;
+    top: 0; bottom: 0; left: 54px; right: 0;
     background-color: #F5F0EA;
     background-repeat: repeat;
     z-index: 0;
@@ -669,28 +688,28 @@
   .bed-slot .placed-chip {
     position: relative;
     z-index: 1;
-    width: 90px;
-    height: 40px;
+    width: 135px;
+    height: 60px;
     box-sizing: border-box;
     flex-shrink: 0;
     background: rgba(255,255,255,0.94);
     border-color: var(--house-accent);
-    padding: 0 8px;
-    font-size: 1.06rem;
-    gap: 5px;
+    padding: 0 10px;
+    font-size: 1.3rem;
+    gap: 7px;
     white-space: nowrap;
     overflow: hidden;
   }
-  .bed-slot .placed-chip .avatar { font-size: 1.44rem; flex-shrink: 0; }
+  .bed-slot .placed-chip .avatar { font-size: 1.75rem; flex-shrink: 0; }
   .bed-slot .placed-chip .name {
     font-weight: 500;
-    font-size: 1.06rem;
+    font-size: 1.3rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     min-width: 0;
   }
-  .bed-slot .placed-chip .age { font-size: 0.98rem; flex-shrink: 0; }
+  .bed-slot .placed-chip .age { font-size: 1.18rem; flex-shrink: 0; }
 
   .crib-item {
     display: flex;
@@ -699,50 +718,50 @@
     gap: 8px;
   }
   .crib-marker {
-    font-size: 26px;
+    font-size: 38px;
     line-height: 1;
     flex-shrink: 0;
   }
   .crib-slot {
     position: relative;
-    width: 185px;
-    height: 55px;
+    width: 278px;
+    height: 82px;
     flex-shrink: 0;
     border: 1.5px solid #C5CFDA;
     box-shadow: 0 2px 6px rgba(30,58,95,0.08);
-    border-radius: 9px;
+    border-radius: 11px;
     background: var(--cream);
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
-    padding: 6px 10px 6px 30px;
+    padding: 8px 14px 8px 46px;
     overflow: hidden;
   }
   .crib-pillow, .crib-mattress { pointer-events: none; }
   .crib-pillow {
     position: absolute;
     top: 50%;
-    left: 8px;
+    left: 12px;
     transform: translateY(-50%);
-    width: 16px;
-    height: 28px;
+    width: 24px;
+    height: 42px;
     background: #FFFFFF;
     border: 1px solid rgba(0,0,0,0.08);
-    border-radius: 4px;
+    border-radius: 5px;
     box-shadow: 1px 1px 3px rgba(30,58,95,0.16);
     z-index: 0;
   }
   .crib-mattress {
     position: absolute;
-    top: 0; bottom: 0; left: 28px; right: 0;
+    top: 0; bottom: 0; left: 42px; right: 0;
     z-index: 0;
   }
   .crib-slot .placed-chip {
     position: relative;
     z-index: 1;
-    width: 125px;
-    height: 40px;
+    width: 187px;
+    height: 60px;
     box-sizing: border-box;
     flex-shrink: 0;
     flex-direction: row;
@@ -750,16 +769,16 @@
     justify-content: flex-start;
     background: rgba(255,255,255,0.94);
     border-color: var(--house-accent);
-    padding: 0 7px;
-    font-size: 0.98rem;
-    gap: 4px;
+    padding: 0 10px;
+    font-size: 1.3rem;
+    gap: 6px;
     white-space: nowrap;
     overflow: hidden;
   }
-  .crib-slot .placed-chip .avatar { font-size: 1.25rem; line-height: 1; flex-shrink: 0; }
+  .crib-slot .placed-chip .avatar { font-size: 1.65rem; line-height: 1; flex-shrink: 0; }
   .crib-slot .placed-chip .name {
     font-weight: 500;
-    font-size: 0.98rem;
+    font-size: 1.3rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -767,7 +786,7 @@
   }
   .crib-slot .placed-chip .age {
     display: inline;
-    font-size: 0.85rem;
+    font-size: 1.1rem;
     color: var(--text-med);
     font-style: italic;
     flex-shrink: 0;
@@ -916,6 +935,109 @@
     .right-rail { width: 100%; border-left: none; border-top: 1px solid var(--card-border); }
     .play-content { flex-direction: column; }
   }
+
+  .save-card {
+    max-width: 760px;
+    text-align: left;
+    padding: 40px 48px;
+  }
+  .save-title {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 2rem;
+    color: var(--navy);
+    text-align: center;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--line-soft);
+    width: 100%;
+    padding: 8px 4px 12px 4px;
+    margin-bottom: 22px;
+    outline: none;
+  }
+  .save-title:focus { border-bottom-color: var(--copper); }
+  .save-body {
+    font-family: var(--font-body);
+    color: var(--text-dark);
+    line-height: 1.55;
+  }
+  .save-house {
+    margin-bottom: 22px;
+  }
+  .save-house:last-child { margin-bottom: 8px; }
+  .save-house-title {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 1.45rem;
+    color: var(--navy);
+    margin: 0 0 4px 0;
+    letter-spacing: 0.02em;
+  }
+  .save-house-meta {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--text-med);
+    margin-bottom: 12px;
+  }
+  .save-rooms {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding-left: 8px;
+    border-left: 3px solid var(--copper-light);
+  }
+  .save-room {
+    padding: 4px 0 4px 14px;
+  }
+  .save-room-name {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--navy);
+    margin: 0 0 2px 0;
+  }
+  .save-room-line {
+    font-size: 1rem;
+    padding: 1px 0;
+  }
+  .save-room-line .marker {
+    display: inline-block;
+    width: 22px;
+  }
+  .save-room-line .empty {
+    color: var(--text-light);
+    font-style: italic;
+  }
+  .save-actions {
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  @media print {
+    body * { visibility: hidden !important; }
+    .save-overlay, .save-overlay * { visibility: visible !important; }
+    .save-overlay {
+      position: absolute !important;
+      inset: 0 !important;
+      background: #fff !important;
+      display: block !important;
+      padding: 0 !important;
+    }
+    .save-overlay .save-card {
+      box-shadow: none !important;
+      border: none !important;
+      max-width: 100% !important;
+      padding: 24px !important;
+      margin: 0 !important;
+    }
+    .save-actions { display: none !important; }
+    .save-title { border-bottom: 1px solid #888 !important; }
+    @page { margin: 16mm; }
+  }
 </style>
 </head>
 <body>
@@ -966,7 +1088,7 @@
 
       <div class="divider" style="margin-top:0;"></div>
 
-      <div class="section-header" style="margin-bottom:8px;">
+      <div class="section-header sub-inline" style="margin-bottom:10px;">
         <span class="sub-title">Kids</span>
         <div class="stepper" id="kidsStepper" data-key="kids">
           <button class="stepper-btn" data-dir="-1">−</button>
@@ -978,7 +1100,7 @@
 
       <div class="divider"></div>
 
-      <div class="section-header" style="margin-bottom:8px;">
+      <div class="section-header sub-inline" style="margin-bottom:10px;">
         <span class="sub-title">Au pairs</span>
         <div class="stepper" id="auPairsStepper" data-key="aupairs">
           <button class="stepper-btn" data-dir="-1">−</button>
@@ -1018,11 +1140,23 @@
       <div class="rail-controls">
         <button id="resetPlacementsBtn">RESET</button>
         <button id="editSetupBtn">HOME</button>
+        <button id="saveBtn">SAVE</button>
       </div>
     </aside>
   </div>
   <footer>© 2026 Kibera LLC</footer>
 </main>
+
+<div class="overlay save-overlay" id="saveModal">
+  <div class="card save-card">
+    <input type="text" id="saveTitle" class="save-title" />
+    <div class="save-body" id="saveBody"></div>
+    <div class="save-actions">
+      <button class="primary" id="savePrintBtn">Print</button>
+      <button class="secondary-link" id="saveCloseBtn">Close</button>
+    </div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <script>
@@ -2273,6 +2407,133 @@ document.getElementById('editSetupBtn').addEventListener('click', function() {
 
 document.getElementById('resetPlacementsBtn').addEventListener('click', function() {
   resetPlacements();
+});
+
+function todayLabel() {
+  const d = new Date();
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  return days[d.getDay()] + ' ' + months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+}
+
+function ageOf(person) {
+  return (person.age === '' || person.age === undefined || person.age === null) ? '?' : person.age;
+}
+
+function formatKid(k) {
+  return ((k.name || '').trim() || '—') + ' (' + ageOf(k) + ')';
+}
+
+function formatAuPair(a) {
+  return ((a.name || '').trim() || '—') + ' (au pair)';
+}
+
+function renderSaveModal() {
+  document.getElementById('saveTitle').value = todayLabel();
+  const body = document.getElementById('saveBody');
+  body.innerHTML = '';
+  const advTitle = state.adventure.title.trim();
+  if (advTitle) {
+    const sub = document.createElement('div');
+    sub.style.cssText = 'font-family: var(--font-heading); font-style: italic; color: var(--text-med); text-align: center; margin: -10px 0 22px 0; letter-spacing: 0.04em;';
+    sub.textContent = advTitle;
+    body.appendChild(sub);
+  }
+
+  for (const house of state.houses) {
+    const auPair = getAuPairForHouse(house.id);
+    const block = document.createElement('div');
+    block.className = 'save-house';
+
+    const h = document.createElement('div');
+    h.className = 'save-house-title';
+    const baseName = auPair
+      ? (((auPair.name || '').trim() || 'Au pair') + "'s House")
+      : house.name;
+    const roomCount = house.rooms.length;
+    h.textContent = baseName + ' — ' + roomCount + ' ' + (roomCount === 1 ? 'Bedroom' : 'Bedrooms');
+    block.appendChild(h);
+
+    if (auPair) {
+      const meta = document.createElement('div');
+      meta.className = 'save-house-meta';
+      meta.textContent = 'Au pair: ' + (((auPair.name || '').trim() || '—'));
+      block.appendChild(meta);
+    }
+
+    const rooms = document.createElement('div');
+    rooms.className = 'save-rooms';
+
+    for (const room of house.rooms) {
+      const r = document.createElement('div');
+      r.className = 'save-room';
+      const rn = document.createElement('div');
+      rn.className = 'save-room-name';
+      rn.textContent = room.name;
+      r.appendChild(rn);
+
+      let anyOccupant = false;
+      for (let bi = 0; bi < room.beds; bi++) {
+        const occs = getOccupantsInBedSlot(house.id, room.id, bi);
+        const line = document.createElement('div');
+        line.className = 'save-room-line';
+        line.innerHTML = '<span class="marker">🛏</span>';
+        if (occs.length === 0) {
+          const e = document.createElement('span');
+          e.className = 'empty';
+          e.textContent = 'empty';
+          line.appendChild(e);
+        } else {
+          anyOccupant = true;
+          const names = occs.map(o => o.kind === 'kid' ? formatKid(o.person) : formatAuPair(o.person));
+          line.appendChild(document.createTextNode(names.join(' & ')));
+        }
+        r.appendChild(line);
+      }
+      for (let ci = 0; ci < room.cribs; ci++) {
+        const occ = getKidInCribSlot(house.id, room.id, ci);
+        const line = document.createElement('div');
+        line.className = 'save-room-line';
+        line.innerHTML = '<span class="marker">🍼</span>';
+        if (!occ) {
+          const e = document.createElement('span');
+          e.className = 'empty';
+          e.textContent = 'empty';
+          line.appendChild(e);
+        } else {
+          anyOccupant = true;
+          line.appendChild(document.createTextNode(formatKid(occ)));
+        }
+        r.appendChild(line);
+      }
+      if (!anyOccupant && room.beds === 0 && room.cribs === 0) {
+        const e = document.createElement('div');
+        e.className = 'save-room-line';
+        e.innerHTML = '<span class="empty">no furniture</span>';
+        r.appendChild(e);
+      }
+      rooms.appendChild(r);
+    }
+    block.appendChild(rooms);
+    body.appendChild(block);
+  }
+}
+
+document.getElementById('saveBtn').addEventListener('click', function() {
+  renderSaveModal();
+  document.getElementById('saveModal').classList.add('show');
+});
+
+document.getElementById('saveCloseBtn').addEventListener('click', function() {
+  document.getElementById('saveModal').classList.remove('show');
+});
+
+document.getElementById('savePrintBtn').addEventListener('click', function() {
+  window.print();
+});
+
+document.getElementById('saveModal').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('show');
 });
 
 document.addEventListener('click', function(e) {
