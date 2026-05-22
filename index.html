@@ -494,12 +494,11 @@
     padding-top: 8px;
   }
   .rail-controls {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 8px;
   }
   .rail-controls button {
-    flex: 1;
     background: var(--cream);
     border: 1px solid var(--card-border);
     color: var(--navy);
@@ -511,9 +510,14 @@
     text-transform: uppercase;
     font-weight: 600;
     cursor: pointer;
-    transition: border-color 0.15s, color 0.15s;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
   }
   .rail-controls button:hover { border-color: var(--copper-light); color: var(--copper); }
+  .rail-controls button.playing {
+    background: var(--copper-pale);
+    border-color: var(--copper);
+    color: var(--copper-dark);
+  }
 
   .houses-grid {
     flex: 1;
@@ -1026,6 +1030,9 @@
     font-size: 1rem;
     padding: 1px 0;
     text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .save-room-line .marker {
     display: inline-block;
@@ -1043,7 +1050,27 @@
     gap: 12px;
   }
 
+  .beach-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .beach-bg-item {
+    position: absolute;
+    line-height: 1;
+    filter: saturate(0.55);
+    user-select: none;
+  }
+
+  body { position: relative; }
+  body > * { position: relative; z-index: 1; }
+  body > .beach-bg { z-index: 0; }
+  #setup, #saveModal { z-index: 40; }
+
   @media print {
+    .beach-bg { display: none !important; }
     body * { visibility: hidden !important; }
     .save-overlay, .save-overlay * { visibility: visible !important; }
     .save-overlay {
@@ -1169,6 +1196,7 @@
         <button id="resetPlacementsBtn">RESET</button>
         <button id="editSetupBtn">HOME</button>
         <button id="saveBtn">SAVE</button>
+        <button id="musicBtn">MUSIC</button>
       </div>
     </aside>
   </div>
@@ -2586,6 +2614,116 @@ document.getElementById('saveModal').addEventListener('click', function(e) {
   if (e.target === this) this.classList.remove('show');
 });
 
+let audioCtx = null;
+let musicGain = null;
+let musicPlaying = false;
+let musicScheduler = null;
+
+const MUSIC_BEAT = 0.32;
+const MELODY = [
+  [261.63, 1], [329.63, 1], [392.00, 1], [523.25, 1],
+  [440.00, 0.5], [392.00, 0.5], [329.63, 1], [392.00, 1],
+  [349.23, 1], [440.00, 1], [523.25, 0.5], [440.00, 0.5],
+  [392.00, 1], [329.63, 1], [261.63, 2]
+];
+const BASS = [
+  [130.81, 2], [196.00, 2], [174.61, 2], [130.81, 2]
+];
+
+function playMusicNote(freq, when, duration, wave, vel) {
+  const osc = audioCtx.createOscillator();
+  osc.type = wave;
+  osc.frequency.value = freq;
+  const env = audioCtx.createGain();
+  env.gain.setValueAtTime(0, when);
+  env.gain.linearRampToValueAtTime(vel, when + 0.015);
+  env.gain.exponentialRampToValueAtTime(0.0001, when + duration * 0.95);
+  osc.connect(env);
+  env.connect(musicGain);
+  osc.start(when);
+  osc.stop(when + duration + 0.02);
+}
+
+function playShaker(when) {
+  const bufferSize = Math.floor(audioCtx.sampleRate * 0.05);
+  const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * 0.5;
+  const noise = audioCtx.createBufferSource();
+  noise.buffer = buffer;
+  const filter = audioCtx.createBiquadFilter();
+  filter.type = 'highpass';
+  filter.frequency.value = 4500;
+  const env = audioCtx.createGain();
+  env.gain.setValueAtTime(0, when);
+  env.gain.linearRampToValueAtTime(0.10, when + 0.005);
+  env.gain.exponentialRampToValueAtTime(0.0001, when + 0.04);
+  noise.connect(filter);
+  filter.connect(env);
+  env.connect(musicGain);
+  noise.start(when);
+  noise.stop(when + 0.06);
+}
+
+function loopMusic() {
+  if (!musicPlaying) return;
+  const start = audioCtx.currentTime + 0.05;
+  let off = 0;
+  for (const [freq, beats] of MELODY) {
+    playMusicNote(freq, start + off * MUSIC_BEAT, beats * MUSIC_BEAT, 'sine', 0.42);
+    off += beats;
+  }
+  let bassOff = 0;
+  for (const [freq, beats] of BASS) {
+    playMusicNote(freq, start + bassOff * MUSIC_BEAT, beats * MUSIC_BEAT, 'triangle', 0.32);
+    bassOff += beats;
+  }
+  const totalBeats = off;
+  for (let i = 0; i < totalBeats * 2; i++) {
+    playShaker(start + i * MUSIC_BEAT * 0.5);
+  }
+  const loopMs = totalBeats * MUSIC_BEAT * 1000;
+  musicScheduler = setTimeout(loopMusic, loopMs);
+}
+
+function startMusic() {
+  if (musicPlaying) return;
+  if (!audioCtx) {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return;
+    audioCtx = new Ctx();
+  }
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  musicGain = audioCtx.createGain();
+  musicGain.gain.value = 0.0;
+  musicGain.connect(audioCtx.destination);
+  musicGain.gain.linearRampToValueAtTime(0.14, audioCtx.currentTime + 0.4);
+  musicPlaying = true;
+  loopMusic();
+}
+
+function stopMusic() {
+  musicPlaying = false;
+  if (musicScheduler) { clearTimeout(musicScheduler); musicScheduler = null; }
+  if (musicGain && audioCtx) {
+    const t = audioCtx.currentTime;
+    musicGain.gain.setValueAtTime(musicGain.gain.value, t);
+    musicGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.25);
+  }
+}
+
+document.getElementById('musicBtn').addEventListener('click', function() {
+  if (musicPlaying) {
+    stopMusic();
+    this.textContent = 'MUSIC';
+    this.classList.remove('playing');
+  } else {
+    startMusic();
+    this.textContent = 'QUIET';
+    this.classList.add('playing');
+  }
+});
+
 document.addEventListener('click', function(e) {
   const pop = document.getElementById('avatarPopover');
   if (!pop.classList.contains('hidden') && !pop.contains(e.target) && !e.target.closest('[data-avatar-kind]')) {
@@ -2776,7 +2914,34 @@ document.addEventListener('pointercancel', function(e) {
   if (drag && e.pointerId === drag.pointerId) cleanupDrag();
 });
 
+const BEACH_EMOJIS = ['🐚','🦀','🐠','🌊','🐬','🦞','🐢','🌴','🌺','🐟','⭐','🌞','🐳','🦭','🪸','🏖️','☀️','🐡'];
+
+function renderBeachBg() {
+  if (document.querySelector('.beach-bg')) return;
+  const bg = document.createElement('div');
+  bg.className = 'beach-bg';
+  const count = 26;
+  for (let i = 0; i < count; i++) {
+    const item = document.createElement('span');
+    item.className = 'beach-bg-item';
+    item.textContent = BEACH_EMOJIS[Math.floor(Math.random() * BEACH_EMOJIS.length)];
+    const top = Math.random() * 95;
+    const left = Math.random() * 95;
+    const size = 36 + Math.random() * 70;
+    const opacity = 0.05 + Math.random() * 0.10;
+    const rot = (Math.random() * 70 - 35);
+    item.style.top = top + '%';
+    item.style.left = left + '%';
+    item.style.fontSize = size + 'px';
+    item.style.opacity = String(opacity);
+    item.style.transform = 'rotate(' + rot + 'deg)';
+    bg.appendChild(item);
+  }
+  document.body.appendChild(bg);
+}
+
 function init() {
+  renderBeachBg();
   load();
   renderSetup();
   if (window.location.hash === '#play') {
