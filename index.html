@@ -66,12 +66,19 @@
     border: 1px solid var(--card-border);
     border-radius: 12px;
     padding: 34px 42px;
-    max-width: 560px;
+    max-width: 780px;
     width: 100%;
     text-align: center;
     box-shadow: 0 12px 40px rgba(30,58,95,0.14);
     margin: auto;
   }
+  #housesList {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 10px;
+    align-items: start;
+  }
+  #housesList .house-block { margin-bottom: 0; }
 
   .overlay h2 {
     font-family: var(--font-heading);
@@ -305,11 +312,11 @@
   .roommate-row input[type="number"] { width: 56px; }
 
   .avatar-btn {
-    width: 38px; height: 38px;
+    width: 50px; height: 50px;
     background: var(--card-bg);
     border: 1px solid var(--card-border);
-    border-radius: 7px;
-    font-size: 1.3rem;
+    border-radius: 8px;
+    font-size: 1.95rem;
     line-height: 1;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
@@ -328,16 +335,16 @@
     z-index: 100;
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    gap: 4px;
+    gap: 6px;
     max-width: calc(100vw - 24px);
   }
   .avatar-popover.hidden { display: none; }
   .avatar-opt {
-    width: 36px; height: 36px;
-    font-size: 1.25rem;
+    width: 52px; height: 52px;
+    font-size: 1.85rem;
     background: transparent;
     border: 1px solid transparent;
-    border-radius: 6px;
+    border-radius: 7px;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: background 0.1s, border-color 0.1s;
@@ -615,41 +622,35 @@
     height: 110px;
     width: 250px;
     flex-shrink: 0;
-    border: 1.5px solid #DDE2E7;
+    border: 1.5px solid #C5CFDA;
     border-radius: 10px;
     background: var(--cream);
+    box-shadow: 0 2px 6px rgba(30,58,95,0.08);
     display: grid;
     grid-template-rows: 1fr 1fr;
     align-items: center;
     justify-items: start;
-    padding: 8px 10px 8px 50px;
+    padding: 8px 10px 8px 42px;
     gap: 4px;
     overflow: hidden;
   }
-  .bed-headboard, .bed-pillow, .bed-blanket { pointer-events: none; }
-  .bed-headboard {
-    position: absolute;
-    top: 0; bottom: 0; left: 0;
-    width: 11px;
-    background: linear-gradient(to right, #BFC8D1 0%, #DDE2E7 100%);
-    z-index: 0;
-  }
+  .bed-pillow, .bed-blanket { pointer-events: none; }
   .bed-pillow {
     position: absolute;
-    left: 17px;
-    width: 22px;
-    height: 28px;
+    left: 9px;
+    width: 24px;
+    height: 32px;
     background: #FFFFFF;
     border: 1px solid rgba(0,0,0,0.08);
     border-radius: 5px;
-    box-shadow: 1px 0 2px rgba(0,0,0,0.07);
+    box-shadow: 1px 1px 3px rgba(30,58,95,0.16);
     z-index: 0;
   }
   .bed-pillow.top    { top: 8px; }
   .bed-pillow.bottom { bottom: 8px; }
   .bed-blanket {
     position: absolute;
-    top: 0; bottom: 0; left: 44px; right: 0;
+    top: 0; bottom: 0; left: 36px; right: 0;
     background-color: #F5F0EA;
     background-repeat: repeat;
     z-index: 0;
@@ -664,57 +665,66 @@
     background: rgba(255,255,255,0.94);
     border-color: var(--house-accent);
     padding: 0 8px;
-    font-size: 0.85rem;
+    font-size: 1.06rem;
     gap: 5px;
     white-space: nowrap;
     overflow: hidden;
   }
-  .bed-slot .placed-chip .avatar { font-size: 1.15rem; flex-shrink: 0; }
+  .bed-slot .placed-chip .avatar { font-size: 1.44rem; flex-shrink: 0; }
   .bed-slot .placed-chip .name {
     font-weight: 500;
-    font-size: 0.85rem;
+    font-size: 1.06rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     min-width: 0;
   }
-  .bed-slot .placed-chip .age { font-size: 0.78rem; flex-shrink: 0; }
+  .bed-slot .placed-chip .age { font-size: 0.98rem; flex-shrink: 0; }
 
+  .crib-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+  .crib-marker {
+    font-size: 26px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
   .crib-slot {
     position: relative;
-    width: 140px;
+    width: 170px;
     height: 55px;
     flex-shrink: 0;
-    border: 1.5px solid #DDE2E7;
+    border: 1.5px solid #C5CFDA;
+    box-shadow: 0 2px 6px rgba(30,58,95,0.08);
     border-radius: 9px;
     background: var(--cream);
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
-    padding: 6px 8px 6px 36px;
+    padding: 6px 10px 6px 30px;
     overflow: hidden;
   }
-  .crib-headboard, .crib-marker, .crib-mattress { pointer-events: none; }
-  .crib-headboard {
-    position: absolute;
-    top: 0; bottom: 0; left: 0;
-    width: 9px;
-    background: linear-gradient(to right, #BFC8D1 0%, #DDE2E7 100%);
-    z-index: 0;
-  }
-  .crib-marker {
+  .crib-pillow, .crib-mattress { pointer-events: none; }
+  .crib-pillow {
     position: absolute;
     top: 50%;
-    left: 14px;
+    left: 8px;
     transform: translateY(-50%);
-    font-size: 17px;
-    line-height: 1;
+    width: 16px;
+    height: 28px;
+    background: #FFFFFF;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 4px;
+    box-shadow: 1px 1px 3px rgba(30,58,95,0.16);
     z-index: 0;
   }
   .crib-mattress {
     position: absolute;
-    top: 0; bottom: 0; left: 32px; right: 0;
+    top: 0; bottom: 0; left: 28px; right: 0;
     z-index: 0;
   }
   .crib-slot .placed-chip {
@@ -730,15 +740,15 @@
     background: rgba(255,255,255,0.94);
     border-color: var(--house-accent);
     padding: 0 7px;
-    font-size: 0.78rem;
+    font-size: 0.98rem;
     gap: 4px;
     white-space: nowrap;
     overflow: hidden;
   }
-  .crib-slot .placed-chip .avatar { font-size: 1rem; line-height: 1; flex-shrink: 0; }
+  .crib-slot .placed-chip .avatar { font-size: 1.25rem; line-height: 1; flex-shrink: 0; }
   .crib-slot .placed-chip .name {
     font-weight: 500;
-    font-size: 0.78rem;
+    font-size: 0.98rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -746,7 +756,7 @@
   }
   .crib-slot .placed-chip .age {
     display: inline;
-    font-size: 0.68rem;
+    font-size: 0.85rem;
     color: var(--text-med);
     font-style: italic;
     flex-shrink: 0;
@@ -812,12 +822,12 @@
     background: var(--cream);
     border: 1px solid var(--copper);
     border-radius: 8px;
-    padding: 6px 10px;
+    padding: 6px 12px;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
     font-family: var(--font-body);
-    font-size: 0.92rem;
+    font-size: 1.15rem;
     color: var(--text-dark);
     cursor: grab;
     user-select: none;
@@ -827,9 +837,9 @@
     transform: translateY(-1px);
     box-shadow: 0 3px 10px rgba(30,58,95,0.12);
   }
-  .tray-chip .avatar { font-size: 1.2rem; }
+  .tray-chip .avatar { font-size: 1.5rem; }
   .tray-chip .name { font-weight: 500; }
-  .tray-chip .age { color: var(--text-med); font-style: italic; font-size: 0.85rem; }
+  .tray-chip .age { color: var(--text-med); font-style: italic; font-size: 1.06rem; }
 
   .tray-chip, .placed-chip {
     touch-action: none;
@@ -1007,10 +1017,16 @@
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <script>
 const AVATARS = [
-  '👧','🧒','👦','👶','👩‍🦰','👨‍🦱',
-  '🦸‍♀️','🦸‍♂️','🧚','🧙‍♂️','🧜‍♀️','🧝‍♀️',
-  '🐻','🦊','🐼','🦁','🐯','🐰',
-  '🐶','🐱','🦄','🐲','🐧','🦋'
+  '👧','🧒','👦','👶','👩‍🦰','👨‍🦱','🧑',
+  '🦸‍♀️','🦸‍♂️','🧚','🧙','🧜‍♀️','🧝','🧞',
+  '🐻','🐼','🐨','🐰','🐶','🐱','🦊','🐯','🦁','🐵','🦍',
+  '🐮','🐷','🐭','🐹','🦝','🦔','🐺','🦒','🐘','🦏','🦛',
+  '🐴','🦓','🦌','🦘','🐪','🐫','🦙','🦫','🦦','🦥',
+  '🐔','🐧','🦅','🦉','🦆','🦢','🦜','🦩','🦚','🐤','🦃',
+  '🐠','🐡','🐬','🐳','🦈','🐙','🦞','🐢','🦭','🐚',
+  '🦋','🐝','🐞','🐛','🐌','🕷','🦂',
+  '🦎','🐊','🦖','🦕','🐉','🦄','🐲',
+  '🌟','✨','🌈','🌸','🌻','🌼','🌺','🍄','🌵','🌴'
 ];
 
 const LS_KEY = 'rm_setup_v1';
@@ -1031,154 +1047,174 @@ function paletteForHouse(index) {
 
 const BEDDING_THEMES = [
   { // 1 pink hearts
-    color: '#FDE3EE', tile: 72, items: [
-      { e: '💗', x: 14, y: 22, s: 17, r: -18, o: 0.60 },
-      { e: '💗', x: 48, y: 14, s: 11, r: 12,  o: 0.50 },
-      { e: '💗', x: 30, y: 42, s: 14, r: -6,  o: 0.55 },
-      { e: '💗', x: 60, y: 50, s: 9,  r: 25,  o: 0.45 },
-      { e: '💗', x: 6,  y: 58, s: 12, r: 8,   o: 0.50 },
-      { e: '💗', x: 54, y: 66, s: 8,  r: -22, o: 0.45 },
+    color: '#FDE3EE', tile: 84, items: [
+      { e: '💗', x: 18, y: 24, s: 38, r: -18, o: 0.26 },
+      { e: '💗', x: 60, y: 14, s: 10, r: 12,  o: 0.70 },
+      { e: '💗', x: 32, y: 48, s: 14, r: -6,  o: 0.50 },
+      { e: '💗', x: 70, y: 50, s: 5,  r: 25,  o: 0.78 },
+      { e: '💗', x: 6,  y: 62, s: 22, r: 8,   o: 0.38 },
+      { e: '💗', x: 58, y: 68, s: 6,  r: -22, o: 0.72 },
+      { e: '💗', x: 42, y: 76, s: 9,  r: 15,  o: 0.55 },
     ],
   },
   { // 2 mint stars
-    color: '#DCEFE0', tile: 72, items: [
-      { e: '⭐', x: 14, y: 18, s: 16, r: -8,  o: 0.55 },
-      { e: '⭐', x: 46, y: 26, s: 10, r: 22,  o: 0.50 },
-      { e: '⭐', x: 26, y: 46, s: 13, r: -16, o: 0.55 },
-      { e: '⭐', x: 60, y: 54, s: 9,  r: 10,  o: 0.45 },
-      { e: '⭐', x: 8,  y: 60, s: 11, r: 28,  o: 0.50 },
-      { e: '✨', x: 60, y: 10, s: 10, r: 0,   o: 0.50 },
-      { e: '✨', x: 38, y: 66, s: 9,  r: 0,   o: 0.45 },
+    color: '#DCEFE0', tile: 84, items: [
+      { e: '⭐', x: 18, y: 26, s: 34, r: -8,  o: 0.28 },
+      { e: '⭐', x: 56, y: 14, s: 7,  r: 22,  o: 0.78 },
+      { e: '⭐', x: 30, y: 50, s: 14, r: -16, o: 0.55 },
+      { e: '⭐', x: 70, y: 56, s: 5,  r: 10,  o: 0.80 },
+      { e: '✨', x: 70, y: 18, s: 26, r: 0,   o: 0.32 },
+      { e: '✨', x: 40, y: 70, s: 6,  r: 0,   o: 0.65 },
+      { e: '⭐', x: 10, y: 72, s: 11, r: 28,  o: 0.50 },
     ],
   },
   { // 3 lavender dots
-    color: '#E8DBF2', tile: 66, dotColor: 'rgba(123,75,148,0.45)',
+    color: '#E8DBF2', tile: 80, dotColor: 'rgba(123,75,148,0.55)',
     dots: [
-      { x: 10, y: 14, r: 2.6 }, { x: 28, y: 8,  r: 1.4 }, { x: 48, y: 18, r: 2.9 },
-      { x: 18, y: 30, r: 1.7 }, { x: 38, y: 36, r: 2.2 }, { x: 56, y: 32, r: 1.3 },
-      { x: 8,  y: 50, r: 2.5 }, { x: 30, y: 54, r: 1.9 }, { x: 52, y: 58, r: 2.0 },
+      { x: 14, y: 16, r: 5.5 },
+      { x: 34, y: 8,  r: 1.2 },
+      { x: 54, y: 20, r: 3.4 },
+      { x: 22, y: 34, r: 1.8 },
+      { x: 44, y: 42, r: 7.5 },
+      { x: 64, y: 34, r: 1.0 },
+      { x: 8,  y: 58, r: 2.8 },
+      { x: 32, y: 62, r: 1.5 },
+      { x: 56, y: 64, r: 4.2 },
+      { x: 72, y: 70, r: 1.3 },
     ],
   },
   { // 4 peach rainbows
-    color: '#FDE3D1', tile: 80, items: [
-      { e: '🌈', x: 16, y: 22, s: 18, r: -10, o: 0.60 },
-      { e: '🌈', x: 56, y: 16, s: 13, r: 14,  o: 0.50 },
-      { e: '🌈', x: 36, y: 46, s: 20, r: 0,   o: 0.55 },
-      { e: '🌈', x: 14, y: 62, s: 12, r: -8,  o: 0.50 },
-      { e: '🌈', x: 62, y: 64, s: 15, r: 18,  o: 0.55 },
+    color: '#FDE3D1', tile: 92, items: [
+      { e: '🌈', x: 22, y: 30, s: 38, r: -10, o: 0.30 },
+      { e: '🌈', x: 64, y: 16, s: 8,  r: 14,  o: 0.75 },
+      { e: '🌈', x: 40, y: 58, s: 20, r: 0,   o: 0.55 },
+      { e: '🌈', x: 14, y: 72, s: 6,  r: -8,  o: 0.70 },
+      { e: '🌈', x: 74, y: 70, s: 14, r: 18,  o: 0.45 },
+      { e: '🌈', x: 52, y: 84, s: 5,  r: -5,  o: 0.60 },
     ],
   },
   { // 5 sky clouds
-    color: '#DDEAF5', tile: 78, items: [
-      { e: '☁️', x: 18, y: 20, s: 18, r: 0, o: 0.60 },
-      { e: '☁️', x: 54, y: 14, s: 13, r: 0, o: 0.50 },
-      { e: '☁️', x: 30, y: 44, s: 22, r: 0, o: 0.55 },
-      { e: '☁️', x: 64, y: 50, s: 11, r: 0, o: 0.50 },
-      { e: '☁️', x: 14, y: 64, s: 16, r: 0, o: 0.55 },
+    color: '#DDEAF5', tile: 92, items: [
+      { e: '☁️', x: 22, y: 28, s: 40, r: 0, o: 0.30 },
+      { e: '☁️', x: 66, y: 14, s: 8,  r: 0, o: 0.75 },
+      { e: '☁️', x: 32, y: 56, s: 22, r: 0, o: 0.45 },
+      { e: '☁️', x: 72, y: 56, s: 6,  r: 0, o: 0.65 },
+      { e: '☁️', x: 12, y: 76, s: 14, r: 0, o: 0.55 },
+      { e: '☁️', x: 60, y: 82, s: 5,  r: 0, o: 0.78 },
     ],
   },
   { // 6 lemon unicorns
-    color: '#FBEEC2', tile: 80, items: [
-      { e: '🦄', x: 16, y: 22, s: 17, r: -14, o: 0.60 },
-      { e: '🦄', x: 56, y: 16, s: 12, r: 10,  o: 0.50 },
-      { e: '🦄', x: 32, y: 46, s: 19, r: 0,   o: 0.55 },
-      { e: '🦄', x: 14, y: 62, s: 11, r: 8,   o: 0.50 },
-      { e: '🦄', x: 62, y: 64, s: 14, r: -10, o: 0.55 },
-      { e: '✨', x: 44, y: 30, s: 10, r: 0,   o: 0.55 },
-      { e: '✨', x: 66, y: 36, s: 8,  r: 0,   o: 0.50 },
+    color: '#FBEEC2', tile: 92, items: [
+      { e: '🦄', x: 22, y: 30, s: 38, r: -14, o: 0.28 },
+      { e: '🦄', x: 66, y: 18, s: 7,  r: 10,  o: 0.78 },
+      { e: '🦄', x: 38, y: 58, s: 18, r: 0,   o: 0.50 },
+      { e: '🦄', x: 14, y: 72, s: 6,  r: 8,   o: 0.70 },
+      { e: '🦄', x: 72, y: 74, s: 14, r: -10, o: 0.45 },
+      { e: '✨', x: 50, y: 38, s: 12, r: 0,   o: 0.55 },
+      { e: '✨', x: 78, y: 44, s: 4,  r: 0,   o: 0.80 },
     ],
   },
   { // 7 lilac butterflies
-    color: '#EEDFF7', tile: 76, items: [
-      { e: '🦋', x: 14, y: 22, s: 18, r: -14, o: 0.60 },
-      { e: '🦋', x: 52, y: 14, s: 12, r: 20,  o: 0.50 },
-      { e: '🦋', x: 30, y: 46, s: 15, r: -5,  o: 0.55 },
-      { e: '🦋', x: 62, y: 52, s: 10, r: 25,  o: 0.45 },
-      { e: '🦋', x: 8,  y: 60, s: 13, r: 8,   o: 0.50 },
+    color: '#EEDFF7', tile: 88, items: [
+      { e: '🦋', x: 20, y: 28, s: 36, r: -14, o: 0.30 },
+      { e: '🦋', x: 62, y: 14, s: 9,  r: 20,  o: 0.70 },
+      { e: '🦋', x: 36, y: 56, s: 16, r: -5,  o: 0.50 },
+      { e: '🦋', x: 74, y: 60, s: 6,  r: 25,  o: 0.75 },
+      { e: '🦋', x: 10, y: 72, s: 13, r: 8,   o: 0.45 },
+      { e: '🦋', x: 50, y: 80, s: 5,  r: -10, o: 0.65 },
     ],
   },
   { // 8 sage leaves
-    color: '#DCEAD7', tile: 72, items: [
-      { e: '🍃', x: 14, y: 22, s: 17, r: -25, o: 0.55 },
-      { e: '🍃', x: 48, y: 16, s: 12, r: 35,  o: 0.50 },
-      { e: '🍃', x: 30, y: 46, s: 15, r: -10, o: 0.55 },
-      { e: '🍃', x: 60, y: 54, s: 10, r: 20,  o: 0.50 },
-      { e: '🍃', x: 8,  y: 60, s: 13, r: 45,  o: 0.50 },
-      { e: '🌿', x: 42, y: 64, s: 12, r: 0,   o: 0.50 },
+    color: '#DCEAD7', tile: 86, items: [
+      { e: '🍃', x: 18, y: 24, s: 34, r: -25, o: 0.28 },
+      { e: '🍃', x: 60, y: 18, s: 8,  r: 35,  o: 0.70 },
+      { e: '🍃', x: 36, y: 54, s: 16, r: -10, o: 0.50 },
+      { e: '🍃', x: 72, y: 60, s: 5,  r: 20,  o: 0.78 },
+      { e: '🍃', x: 10, y: 70, s: 13, r: 45,  o: 0.45 },
+      { e: '🌿', x: 50, y: 76, s: 24, r: 0,   o: 0.32 },
+      { e: '🌿', x: 78, y: 32, s: 5,  r: 60,  o: 0.65 },
     ],
   },
   { // 9 aqua waves
-    color: '#D6EBED', tile: 76, items: [
-      { e: '🌊', x: 14, y: 22, s: 18, r: 0,  o: 0.55 },
-      { e: '🌊', x: 50, y: 16, s: 13, r: 0,  o: 0.50 },
-      { e: '🌊', x: 30, y: 46, s: 20, r: 0,  o: 0.55 },
-      { e: '🌊', x: 62, y: 52, s: 11, r: 0,  o: 0.50 },
-      { e: '🌊', x: 10, y: 62, s: 15, r: 0,  o: 0.55 },
+    color: '#D6EBED', tile: 88, items: [
+      { e: '🌊', x: 18, y: 30, s: 38, r: 0,  o: 0.30 },
+      { e: '🌊', x: 62, y: 16, s: 9,  r: 0,  o: 0.70 },
+      { e: '🌊', x: 36, y: 58, s: 20, r: 0,  o: 0.45 },
+      { e: '🌊', x: 74, y: 60, s: 5,  r: 0,  o: 0.78 },
+      { e: '🌊', x: 12, y: 74, s: 14, r: 0,  o: 0.50 },
+      { e: '🌊', x: 54, y: 82, s: 6,  r: 0,  o: 0.60 },
     ],
   },
   { // 10 mint spirals
-    color: '#D9ECE7', tile: 74, items: [
-      { e: '🌀', x: 14, y: 22, s: 18, r: 0,  o: 0.55 },
-      { e: '🌀', x: 50, y: 14, s: 12, r: 0,  o: 0.50 },
-      { e: '🌀', x: 30, y: 46, s: 16, r: 0,  o: 0.55 },
-      { e: '🌀', x: 60, y: 52, s: 10, r: 0,  o: 0.45 },
-      { e: '🌀', x: 8,  y: 60, s: 13, r: 0,  o: 0.50 },
+    color: '#D9ECE7', tile: 88, items: [
+      { e: '🌀', x: 20, y: 30, s: 36, r: 0,  o: 0.30 },
+      { e: '🌀', x: 62, y: 14, s: 7,  r: 0,  o: 0.72 },
+      { e: '🌀', x: 38, y: 58, s: 16, r: 0,  o: 0.50 },
+      { e: '🌀', x: 74, y: 58, s: 5,  r: 0,  o: 0.75 },
+      { e: '🌀', x: 12, y: 72, s: 12, r: 0,  o: 0.45 },
+      { e: '🌀', x: 56, y: 80, s: 4,  r: 0,  o: 0.68 },
     ],
   },
   { // 11 cream cherries
-    color: '#FBE4D8', tile: 72, items: [
-      { e: '🍒', x: 14, y: 22, s: 16, r: -10, o: 0.55 },
-      { e: '🍒', x: 46, y: 16, s: 11, r: 12,  o: 0.50 },
-      { e: '🍒', x: 30, y: 46, s: 14, r: -5,  o: 0.55 },
-      { e: '🍒', x: 58, y: 52, s: 9,  r: 18,  o: 0.45 },
-      { e: '🍒', x: 8,  y: 60, s: 12, r: 0,   o: 0.50 },
+    color: '#FBE4D8', tile: 86, items: [
+      { e: '🍒', x: 18, y: 28, s: 32, r: -10, o: 0.30 },
+      { e: '🍒', x: 60, y: 14, s: 7,  r: 12,  o: 0.75 },
+      { e: '🍒', x: 38, y: 52, s: 16, r: -5,  o: 0.50 },
+      { e: '🍒', x: 74, y: 58, s: 5,  r: 18,  o: 0.78 },
+      { e: '🍒', x: 12, y: 72, s: 13, r: 0,   o: 0.45 },
+      { e: '🍒', x: 56, y: 80, s: 4,  r: 8,   o: 0.68 },
     ],
   },
   { // 12 twilight moons
-    color: '#DDD8EE', tile: 74, items: [
-      { e: '🌙', x: 14, y: 22, s: 18, r: 0,   o: 0.55 },
-      { e: '🌙', x: 50, y: 16, s: 12, r: 25,  o: 0.50 },
-      { e: '🌙', x: 30, y: 46, s: 16, r: -15, o: 0.55 },
-      { e: '🌙', x: 60, y: 54, s: 10, r: 10,  o: 0.45 },
-      { e: '✨', x: 38, y: 30, s: 9,  r: 0,   o: 0.55 },
-      { e: '✨', x: 62, y: 36, s: 8,  r: 0,   o: 0.50 },
-      { e: '✨', x: 18, y: 60, s: 9,  r: 0,   o: 0.45 },
+    color: '#DDD8EE', tile: 88, items: [
+      { e: '🌙', x: 22, y: 30, s: 38, r: 0,   o: 0.30 },
+      { e: '🌙', x: 64, y: 16, s: 9,  r: 25,  o: 0.70 },
+      { e: '🌙', x: 38, y: 58, s: 16, r: -15, o: 0.50 },
+      { e: '🌙', x: 74, y: 60, s: 5,  r: 10,  o: 0.78 },
+      { e: '✨', x: 50, y: 38, s: 12, r: 0,   o: 0.55 },
+      { e: '✨', x: 80, y: 42, s: 4,  r: 0,   o: 0.80 },
+      { e: '✨', x: 24, y: 72, s: 9,  r: 0,   o: 0.45 },
+      { e: '✨', x: 62, y: 80, s: 5,  r: 0,   o: 0.65 },
     ],
   },
   { // 13 rose flowers
-    color: '#FBE0EA', tile: 76, items: [
-      { e: '🌸', x: 14, y: 22, s: 17, r: -8,  o: 0.55 },
-      { e: '🌸', x: 50, y: 14, s: 12, r: 15,  o: 0.50 },
-      { e: '🌸', x: 30, y: 46, s: 18, r: 0,   o: 0.55 },
-      { e: '🌸', x: 62, y: 52, s: 11, r: -10, o: 0.50 },
-      { e: '🌸', x: 8,  y: 60, s: 14, r: 8,   o: 0.50 },
+    color: '#FBE0EA', tile: 88, items: [
+      { e: '🌸', x: 18, y: 30, s: 36, r: -8,  o: 0.30 },
+      { e: '🌸', x: 62, y: 14, s: 8,  r: 15,  o: 0.72 },
+      { e: '🌸', x: 38, y: 56, s: 18, r: 0,   o: 0.50 },
+      { e: '🌸', x: 74, y: 58, s: 5,  r: -10, o: 0.78 },
+      { e: '🌸', x: 10, y: 72, s: 14, r: 8,   o: 0.45 },
+      { e: '🌸', x: 54, y: 80, s: 4,  r: -5,  o: 0.65 },
     ],
   },
   { // 14 icy snowflakes
-    color: '#DDE9F0', tile: 72, items: [
-      { e: '❄️', x: 14, y: 22, s: 16, r: 0,  o: 0.55 },
-      { e: '❄️', x: 48, y: 14, s: 11, r: 0,  o: 0.50 },
-      { e: '❄️', x: 30, y: 46, s: 15, r: 0,  o: 0.55 },
-      { e: '❄️', x: 60, y: 52, s: 10, r: 0,  o: 0.50 },
-      { e: '❄️', x: 8,  y: 60, s: 13, r: 0,  o: 0.50 },
+    color: '#DDE9F0', tile: 86, items: [
+      { e: '❄️', x: 18, y: 26, s: 34, r: 0,  o: 0.30 },
+      { e: '❄️', x: 60, y: 14, s: 7,  r: 0,  o: 0.75 },
+      { e: '❄️', x: 36, y: 54, s: 16, r: 0,  o: 0.50 },
+      { e: '❄️', x: 72, y: 60, s: 5,  r: 0,  o: 0.78 },
+      { e: '❄️', x: 10, y: 70, s: 13, r: 0,  o: 0.45 },
+      { e: '❄️', x: 52, y: 80, s: 4,  r: 0,  o: 0.68 },
     ],
   },
   { // 15 peach bows
-    color: '#FCE3D2', tile: 76, items: [
-      { e: '🎀', x: 14, y: 22, s: 17, r: -12, o: 0.55 },
-      { e: '🎀', x: 50, y: 16, s: 12, r: 10,  o: 0.50 },
-      { e: '🎀', x: 30, y: 46, s: 16, r: 0,   o: 0.55 },
-      { e: '🎀', x: 60, y: 52, s: 11, r: 18,  o: 0.45 },
-      { e: '🎀', x: 10, y: 60, s: 14, r: -8,  o: 0.50 },
+    color: '#FCE3D2', tile: 88, items: [
+      { e: '🎀', x: 18, y: 28, s: 34, r: -12, o: 0.30 },
+      { e: '🎀', x: 60, y: 14, s: 7,  r: 10,  o: 0.72 },
+      { e: '🎀', x: 38, y: 54, s: 16, r: 0,   o: 0.50 },
+      { e: '🎀', x: 74, y: 58, s: 5,  r: 18,  o: 0.78 },
+      { e: '🎀', x: 12, y: 72, s: 14, r: -8,  o: 0.45 },
+      { e: '🎀', x: 56, y: 80, s: 4,  r: 5,   o: 0.68 },
     ],
   },
   { // 16 lemon suns
-    color: '#FBEAB8', tile: 76, items: [
-      { e: '☀️', x: 14, y: 22, s: 17, r: 0,  o: 0.55 },
-      { e: '☀️', x: 50, y: 14, s: 13, r: 0,  o: 0.50 },
-      { e: '☀️', x: 30, y: 46, s: 18, r: 0,  o: 0.55 },
-      { e: '☀️', x: 60, y: 52, s: 11, r: 0,  o: 0.50 },
-      { e: '☀️', x: 10, y: 62, s: 14, r: 0,  o: 0.50 },
+    color: '#FBEAB8', tile: 90, items: [
+      { e: '☀️', x: 22, y: 30, s: 38, r: 0,  o: 0.30 },
+      { e: '☀️', x: 62, y: 16, s: 9,  r: 0,  o: 0.72 },
+      { e: '☀️', x: 38, y: 58, s: 18, r: 0,  o: 0.50 },
+      { e: '☀️', x: 74, y: 60, s: 5,  r: 0,  o: 0.78 },
+      { e: '☀️', x: 12, y: 74, s: 13, r: 0,  o: 0.45 },
+      { e: '☀️', x: 54, y: 82, s: 4,  r: 0,  o: 0.68 },
     ],
   },
 ];
@@ -1810,9 +1846,12 @@ function renderHousesGrid() {
 
     const title = document.createElement('h3');
     title.className = 'house-title';
-    title.textContent = auPair
+    const roomCount = house.rooms.length;
+    const roomLabel = roomCount === 1 ? 'Bedroom' : 'Bedrooms';
+    const baseName = auPair
       ? (((auPair.name || '').trim() || 'Au pair') + "'s House")
       : house.name;
+    title.textContent = baseName + ': ' + roomCount + ' ' + roomLabel;
     header.appendChild(title);
     card.appendChild(header);
 
@@ -1847,8 +1886,6 @@ function renderHousesGrid() {
           bed.dataset.roomId = room.id;
           bed.dataset.slotIndex = String(bi);
 
-          const headboard = document.createElement('div');
-          headboard.className = 'bed-headboard';
           const pillowTop = document.createElement('div');
           pillowTop.className = 'bed-pillow top';
           const pillowBottom = document.createElement('div');
@@ -1857,7 +1894,6 @@ function renderHousesGrid() {
           blanket.className = 'bed-blanket';
           applyBedding(blanket, BEDDING_THEMES[bedSeq % BEDDING_THEMES.length]);
           bedSeq++;
-          bed.appendChild(headboard);
           bed.appendChild(pillowTop);
           bed.appendChild(pillowBottom);
           bed.appendChild(blanket);
@@ -1878,6 +1914,14 @@ function renderHousesGrid() {
           const cribsRow = document.createElement('div');
           cribsRow.className = 'crib-row';
           for (let ci = 0; ci < room.cribs; ci++) {
+            const item = document.createElement('div');
+            item.className = 'crib-item';
+
+            const marker = document.createElement('span');
+            marker.className = 'crib-marker';
+            marker.textContent = '👶';
+            item.appendChild(marker);
+
             const crib = document.createElement('div');
             crib.className = 'crib-slot';
             crib.dataset.slotType = 'crib';
@@ -1885,22 +1929,19 @@ function renderHousesGrid() {
             crib.dataset.roomId = room.id;
             crib.dataset.slotIndex = String(ci);
 
-            const cribHeadboard = document.createElement('div');
-            cribHeadboard.className = 'crib-headboard';
-            const cribMarker = document.createElement('div');
-            cribMarker.className = 'crib-marker';
-            cribMarker.textContent = '👶';
+            const cribPillow = document.createElement('div');
+            cribPillow.className = 'crib-pillow';
             const cribMattress = document.createElement('div');
             cribMattress.className = 'crib-mattress';
             cribMattress.style.backgroundColor = CRIB_MATTRESS_COLORS[cribSeq % CRIB_MATTRESS_COLORS.length];
             cribSeq++;
-            crib.appendChild(cribHeadboard);
-            crib.appendChild(cribMarker);
+            crib.appendChild(cribPillow);
             crib.appendChild(cribMattress);
 
             const occ = getKidInCribSlot(house.id, room.id, ci);
             if (occ) crib.appendChild(chipNodeForKid(occ, 'placed'));
-            cribsRow.appendChild(crib);
+            item.appendChild(crib);
+            cribsRow.appendChild(item);
           }
           furniture.appendChild(cribsRow);
         }
