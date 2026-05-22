@@ -1,0 +1,2366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<title>Roomies — A Bunk-Up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --copper: #C27B5C;
+    --copper-dark: #8C4A2C;
+    --copper-light: #D4A088;
+    --copper-pale: #F0DDD4;
+    --navy: #1E3A5F;
+    --navy-soft: #3A5578;
+    --cream: #FAF8F5;
+    --warm-gray: #F5F3EF;
+    --card-bg: #F7F5F1;
+    --card-border: #EAE6DF;
+    --line-soft: #E5E0DA;
+    --text-dark: #3A3A3A;
+    --text-med: #6B6B6B;
+    --text-light: #999999;
+    --charcoal: #2D2D2D;
+
+    --font-heading: 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'Source Serif 4', Georgia, serif;
+    --font-display: 'IM Fell English SC', 'Cormorant Garamond', Georgia, serif;
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    min-height: 100%;
+    background: var(--warm-gray);
+    color: var(--text-dark);
+    font-family: var(--font-body);
+    font-weight: 400;
+  }
+
+  [hidden] { display: none !important; }
+
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(245,243,239,0.96);
+    display: none;
+    z-index: 40;
+    backdrop-filter: blur(2px);
+    overflow-y: auto;
+    padding: 20px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .overlay.show {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .overlay .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 34px 42px;
+    max-width: 560px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 12px 40px rgba(30,58,95,0.14);
+    margin: auto;
+  }
+
+  .overlay h2 {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 2.2rem;
+    color: var(--navy);
+    margin: 0 0 20px 0;
+  }
+
+  .flourish {
+    font-family: var(--font-heading);
+    font-style: italic;
+    color: var(--copper);
+    letter-spacing: 0.3em;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .section-card {
+    background: var(--cream);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin-bottom: 14px;
+    text-align: left;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: var(--navy);
+    letter-spacing: 0.04em;
+  }
+
+  .sub-title {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: var(--navy);
+    letter-spacing: 0.04em;
+  }
+
+  .field-label {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    font-style: italic;
+    margin-bottom: 5px;
+    display: block;
+  }
+
+  .help-text {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    font-style: italic;
+    margin-top: 6px;
+  }
+
+  input[type="text"],
+  input[type="number"] {
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 7px;
+    padding: 9px 12px;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  input[type="text"]::placeholder,
+  input[type="number"]::placeholder {
+    color: var(--text-light);
+    font-style: italic;
+  }
+  input[type="text"]:focus,
+  input[type="number"]:focus {
+    border-color: var(--copper);
+    box-shadow: 0 0 0 3px rgba(194,123,92,0.14);
+  }
+  input[type="number"] {
+    width: 60px;
+    text-align: center;
+    -moz-appearance: textfield;
+  }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  .field-row {
+    margin-bottom: 12px;
+  }
+
+  button {
+    font-family: var(--font-body);
+    cursor: pointer;
+    font-size: 0.95rem;
+  }
+
+  button.primary {
+    background: var(--navy);
+    color: var(--cream);
+    border: 1px solid var(--navy);
+    border-radius: 8px;
+    padding: 11px 28px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    transition: background 0.15s;
+  }
+  button.primary:hover:not(:disabled) { background: var(--navy-soft); }
+  button.primary:disabled {
+    background: var(--text-light);
+    border-color: var(--text-light);
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  .secondary-link {
+    background: none;
+    border: none;
+    color: var(--copper);
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    letter-spacing: 0.03em;
+  }
+  .secondary-link:hover { color: var(--copper-dark); }
+
+  .stepper {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .stepper-btn {
+    width: 28px; height: 28px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    color: var(--navy);
+    font-size: 1.1rem;
+    line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.12s, color 0.12s;
+    padding: 0;
+  }
+  .stepper-btn:hover:not(:disabled) { border-color: var(--copper-light); color: var(--copper); }
+  .stepper-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .stepper-val {
+    min-width: 26px;
+    text-align: center;
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    color: var(--navy);
+    font-weight: 500;
+  }
+
+  .house-block {
+    border: 1px solid var(--line-soft);
+    border-radius: 7px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    background: var(--warm-gray);
+  }
+  .house-name-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .house-name-row input { flex: 1; }
+
+  .room-block {
+    border-left: 2px solid var(--line-soft);
+    padding-left: 12px;
+    margin-top: 10px;
+  }
+  .room-sub-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .room-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .room-row input[type="text"] { flex: 1; min-width: 100px; }
+  .room-furniture {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .furniture-label {
+    font-size: 0.72rem;
+    color: var(--text-light);
+    font-style: italic;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .roommate-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .roommate-row input[type="text"] { flex: 1; min-width: 100px; }
+  .roommate-row input[type="number"] { width: 56px; }
+
+  .avatar-btn {
+    width: 38px; height: 38px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 7px;
+    font-size: 1.3rem;
+    line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: border-color 0.12s;
+  }
+  .avatar-btn:hover { border-color: var(--copper-light); }
+
+  .avatar-popover {
+    position: fixed;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 8px 32px rgba(30,58,95,0.18);
+    z-index: 100;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 4px;
+    max-width: calc(100vw - 24px);
+  }
+  .avatar-popover.hidden { display: none; }
+  .avatar-opt {
+    width: 36px; height: 36px;
+    font-size: 1.25rem;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.1s, border-color 0.1s;
+  }
+  .avatar-opt:hover { background: var(--copper-pale); border-color: var(--copper-light); }
+  .avatar-opt.selected { background: var(--copper-pale); border-color: var(--copper); }
+
+  .validation-msg {
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--text-med);
+    margin-bottom: 12px;
+    min-height: 1.2em;
+    transition: color 0.15s;
+  }
+  .validation-msg.ready { color: #5C8A5A; }
+  .validation-msg.error { color: #B05040; }
+
+  .btn-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--line-soft);
+    margin: 16px 0;
+  }
+
+  #play {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--warm-gray);
+  }
+
+  .adventure-header {
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--card-border);
+    padding: 28px 32px 22px 32px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(30,58,95,0.07);
+  }
+  .adventure-header h1 {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 2.4rem;
+    color: var(--navy);
+    margin: 0 0 6px 0;
+    letter-spacing: 0.02em;
+  }
+  .adventure-header .subtitle {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--text-med);
+    letter-spacing: 0.12em;
+  }
+
+  .play-content {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    flex: 1;
+    width: 100%;
+  }
+  .right-rail {
+    width: 240px;
+    flex-shrink: 0;
+    background: var(--card-bg);
+    border-left: 1px solid var(--card-border);
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .rail-title {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.4rem;
+    letter-spacing: 0.22em;
+    color: var(--navy);
+    margin: 0;
+    text-align: center;
+    text-transform: uppercase;
+  }
+  .rail-divider {
+    height: 1px;
+    background: var(--line-soft);
+    flex-shrink: 0;
+  }
+  .rail-chips {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+    min-height: 60px;
+  }
+  #trayChips {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: stretch;
+  }
+  .right-rail .tray-chip {
+    width: 100%;
+    justify-content: flex-start;
+    font-size: 0.88rem;
+  }
+  .rail-count {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.78rem;
+    color: var(--text-med);
+    text-align: center;
+    margin-top: auto;
+    padding-top: 8px;
+  }
+  .rail-controls {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+  }
+  .rail-controls button {
+    flex: 1;
+    background: var(--cream);
+    border: 1px solid var(--card-border);
+    color: var(--navy);
+    border-radius: 7px;
+    padding: 10px 6px;
+    font-family: var(--font-heading);
+    font-size: 0.92rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .rail-controls button:hover { border-color: var(--copper-light); color: var(--copper); }
+
+  .houses-grid {
+    flex: 1;
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 24px;
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    align-content: start;
+  }
+
+  .house-card {
+    --house-accent: var(--copper);
+    --house-accent-light: var(--copper-light);
+    --house-accent-pale: var(--copper-pale);
+    --house-accent-soft: rgba(194,123,92,0.42);
+    --house-accent-stripe: rgba(194,123,92,0.16);
+    background: var(--card-bg);
+    border: 5px solid var(--house-accent-soft);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 14px rgba(30,58,95,0.07);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .house-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .house-title {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 1.35rem;
+    color: var(--house-accent);
+    letter-spacing: 0.02em;
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  .au-pair-slot {
+    width: 56px;
+    height: 56px;
+    border: 2px dashed var(--house-accent-light);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cream);
+    font-size: 0.62rem;
+    color: var(--text-light);
+    font-style: italic;
+    flex-shrink: 0;
+    text-align: center;
+    line-height: 1.1;
+    padding: 4px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .au-pair-slot.filled {
+    border-style: solid;
+    border-color: var(--house-accent);
+    background: var(--house-accent-pale);
+    padding: 4px;
+    text-transform: none;
+    letter-spacing: normal;
+  }
+
+  .house-floor {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .room-cell {
+    background: var(--cream);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .room-cell-name {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--navy);
+    text-align: center;
+    letter-spacing: 0.02em;
+  }
+  .room-cell-empty {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.75rem;
+    color: var(--text-light);
+    text-align: center;
+    padding: 6px 0 2px 0;
+  }
+  .room-furniture {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .bed-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 10px;
+    align-items: stretch;
+  }
+  .crib-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 10px;
+    align-items: stretch;
+    margin-top: 4px;
+  }
+
+  .bed-slot {
+    position: relative;
+    height: 110px;
+    width: 250px;
+    flex-shrink: 0;
+    border: 1.5px solid #DDE2E7;
+    border-radius: 10px;
+    background: var(--cream);
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    align-items: center;
+    justify-items: start;
+    padding: 8px 10px 8px 50px;
+    gap: 4px;
+    overflow: hidden;
+  }
+  .bed-headboard, .bed-pillow, .bed-blanket { pointer-events: none; }
+  .bed-headboard {
+    position: absolute;
+    top: 0; bottom: 0; left: 0;
+    width: 11px;
+    background: linear-gradient(to right, #BFC8D1 0%, #DDE2E7 100%);
+    z-index: 0;
+  }
+  .bed-pillow {
+    position: absolute;
+    left: 17px;
+    width: 22px;
+    height: 28px;
+    background: #FFFFFF;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 5px;
+    box-shadow: 1px 0 2px rgba(0,0,0,0.07);
+    z-index: 0;
+  }
+  .bed-pillow.top    { top: 8px; }
+  .bed-pillow.bottom { bottom: 8px; }
+  .bed-blanket {
+    position: absolute;
+    top: 0; bottom: 0; left: 44px; right: 0;
+    background-color: #F5F0EA;
+    background-repeat: repeat;
+    z-index: 0;
+  }
+  .bed-slot .placed-chip {
+    position: relative;
+    z-index: 1;
+    width: 90px;
+    height: 40px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.94);
+    border-color: var(--house-accent);
+    padding: 0 8px;
+    font-size: 0.85rem;
+    gap: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .bed-slot .placed-chip .avatar { font-size: 1.15rem; flex-shrink: 0; }
+  .bed-slot .placed-chip .name {
+    font-weight: 500;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+  .bed-slot .placed-chip .age { font-size: 0.78rem; flex-shrink: 0; }
+
+  .crib-slot {
+    position: relative;
+    width: 140px;
+    height: 55px;
+    flex-shrink: 0;
+    border: 1.5px solid #DDE2E7;
+    border-radius: 9px;
+    background: var(--cream);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 6px 8px 6px 36px;
+    overflow: hidden;
+  }
+  .crib-headboard, .crib-marker, .crib-mattress { pointer-events: none; }
+  .crib-headboard {
+    position: absolute;
+    top: 0; bottom: 0; left: 0;
+    width: 9px;
+    background: linear-gradient(to right, #BFC8D1 0%, #DDE2E7 100%);
+    z-index: 0;
+  }
+  .crib-marker {
+    position: absolute;
+    top: 50%;
+    left: 14px;
+    transform: translateY(-50%);
+    font-size: 17px;
+    line-height: 1;
+    z-index: 0;
+  }
+  .crib-mattress {
+    position: absolute;
+    top: 0; bottom: 0; left: 32px; right: 0;
+    z-index: 0;
+  }
+  .crib-slot .placed-chip {
+    position: relative;
+    z-index: 1;
+    width: 90px;
+    height: 40px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    background: rgba(255,255,255,0.94);
+    border-color: var(--house-accent);
+    padding: 0 7px;
+    font-size: 0.78rem;
+    gap: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .crib-slot .placed-chip .avatar { font-size: 1rem; line-height: 1; flex-shrink: 0; }
+  .crib-slot .placed-chip .name {
+    font-weight: 500;
+    font-size: 0.78rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+  .crib-slot .placed-chip .age {
+    display: inline;
+    font-size: 0.68rem;
+    color: var(--text-med);
+    font-style: italic;
+    flex-shrink: 0;
+  }
+
+  .placed-chip {
+    background: var(--house-accent-pale);
+    border: 1px solid var(--house-accent);
+    border-radius: 6px;
+    padding: 3px 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.78rem;
+    color: var(--text-dark);
+    font-family: var(--font-body);
+    line-height: 1.1;
+    min-width: 0;
+  }
+  .placed-chip .avatar { font-size: 1rem; flex-shrink: 0; }
+  .placed-chip .name {
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+  .placed-chip .age { color: var(--text-med); font-style: italic; flex-shrink: 0; }
+
+  .bed-slot .placed-chip { width: 100%; }
+  .crib-slot .placed-chip { background: var(--cream); }
+
+  .au-pair-slot .placed-chip {
+    background: transparent;
+    border: none;
+    padding: 0;
+    flex-direction: column;
+    gap: 1px;
+    font-size: 0.62rem;
+    text-align: center;
+  }
+  .au-pair-slot .placed-chip .avatar { font-size: 1.5rem; }
+  .au-pair-slot .placed-chip .name {
+    font-size: 0.62rem;
+    line-height: 1;
+    max-width: 48px;
+  }
+
+  .house-summary {
+    margin-top: 4px;
+    padding: 10px 12px;
+    background: var(--warm-gray);
+    border-left: 3px solid var(--house-accent);
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.88rem;
+    color: var(--text-med);
+    line-height: 1.45;
+    border-radius: 0 6px 6px 0;
+  }
+
+  .tray-chip {
+    background: var(--cream);
+    border: 1px solid var(--copper);
+    border-radius: 8px;
+    padding: 6px 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    color: var(--text-dark);
+    cursor: grab;
+    user-select: none;
+    transition: transform 0.1s, box-shadow 0.1s;
+  }
+  .tray-chip:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(30,58,95,0.12);
+  }
+  .tray-chip .avatar { font-size: 1.2rem; }
+  .tray-chip .name { font-weight: 500; }
+  .tray-chip .age { color: var(--text-med); font-style: italic; font-size: 0.85rem; }
+
+  .tray-chip, .placed-chip {
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .placed-chip { cursor: grab; }
+
+  .drag-ghost {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.95;
+    transform: rotate(-3deg) scale(1.04);
+    box-shadow: 0 12px 28px rgba(30,58,95,0.28);
+    transition: none;
+    cursor: grabbing;
+  }
+  .drag-source { opacity: 0.28; transition: opacity 0.1s; }
+  body.dragging { cursor: grabbing; }
+  body.dragging * { cursor: grabbing !important; }
+
+  .bed-slot.drop-valid,
+  .crib-slot.drop-valid,
+  .au-pair-slot.drop-valid {
+    outline: 2px solid #5C8A5A;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(92,138,90,0.18);
+  }
+  .bed-slot.drop-invalid,
+  .crib-slot.drop-invalid,
+  .au-pair-slot.drop-invalid {
+    outline: 2px dashed #B05040;
+    outline-offset: 2px;
+    opacity: 0.78;
+  }
+  .rail-chips.drop-valid {
+    background: rgba(92,138,90,0.10);
+    box-shadow: inset 0 0 0 2px rgba(92,138,90,0.35);
+    border-radius: 6px;
+  }
+
+  footer {
+    padding: 12px 20px;
+    text-align: center;
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    color: var(--text-light);
+    border-top: 1px solid var(--line-soft);
+  }
+
+  @media (max-width: 600px) {
+    .overlay .card { padding: 24px 18px; }
+    .adventure-header { padding: 20px 16px 16px 16px; }
+    .adventure-header h1 { font-size: 1.8rem; }
+    .room-row { flex-direction: column; align-items: flex-start; }
+    .room-furniture { margin-top: 4px; }
+    .houses-grid { padding: 16px; gap: 16px; grid-template-columns: 1fr; }
+    .house-card { padding: 14px; }
+    .house-title { font-size: 1.2rem; }
+    .right-rail { width: 100%; border-left: none; border-top: 1px solid var(--card-border); }
+    .play-content { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="hudSketch" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="23" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.2" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+</svg>
+
+<div class="overlay show" id="setup">
+  <div class="card">
+    <div class="flourish">— A Bunk-Up —</div>
+    <h2>Who rooms with whom?</h2>
+
+    <div class="section-card" id="adventureCard">
+      <div class="section-header">
+        <span class="section-title">Adventure</span>
+      </div>
+      <div class="field-row">
+        <label class="field-label" for="advTitle">Title</label>
+        <input type="text" id="advTitle" placeholder="France 2026" maxlength="40" autocomplete="off" />
+      </div>
+      <div class="field-row">
+        <label class="field-label" for="advSubtitle">Subtitle</label>
+        <input type="text" id="advSubtitle" placeholder="A summer adventure featuring …" maxlength="100" autocomplete="off" />
+        <p class="help-text">Leave blank to auto-generate from player names.</p>
+      </div>
+    </div>
+
+    <div class="section-card" id="housesCard">
+      <div class="section-header">
+        <span class="section-title">Houses</span>
+        <div class="stepper" id="housesStepper" data-key="houses">
+          <button class="stepper-btn" data-dir="-1">−</button>
+          <span class="stepper-val" id="housesVal">2</span>
+          <button class="stepper-btn" data-dir="1">+</button>
+        </div>
+      </div>
+      <div id="housesList"></div>
+    </div>
+
+    <div class="section-card" id="roommatesCard">
+      <div class="section-header">
+        <span class="section-title">Roommates</span>
+      </div>
+
+      <div class="divider" style="margin-top:0;"></div>
+
+      <div class="section-header" style="margin-bottom:8px;">
+        <span class="sub-title">Kids</span>
+        <div class="stepper" id="kidsStepper" data-key="kids">
+          <button class="stepper-btn" data-dir="-1">−</button>
+          <span class="stepper-val" id="kidsVal">0</span>
+          <button class="stepper-btn" data-dir="1">+</button>
+        </div>
+      </div>
+      <div id="kidsList"></div>
+
+      <div class="divider"></div>
+
+      <div class="section-header" style="margin-bottom:8px;">
+        <span class="sub-title">Au pairs</span>
+        <div class="stepper" id="auPairsStepper" data-key="aupairs">
+          <button class="stepper-btn" data-dir="-1">−</button>
+          <span class="stepper-val" id="auPairsVal">0</span>
+          <button class="stepper-btn" data-dir="1">+</button>
+        </div>
+      </div>
+      <div id="auPairsList"></div>
+    </div>
+
+    <div class="validation-msg" id="validationMsg"></div>
+
+    <div class="btn-row">
+      <button class="primary" id="beginBtn" disabled>Begin Bunk-Up</button>
+      <button class="secondary-link" id="resetBtn">Reset to defaults</button>
+    </div>
+  </div>
+</div>
+
+<div class="avatar-popover hidden" id="avatarPopover"></div>
+
+<main id="play" hidden>
+  <header class="adventure-header">
+    <h1 id="playTitle"></h1>
+    <p class="subtitle" id="playSubtitle"></p>
+  </header>
+  <div class="play-content">
+    <section class="houses-grid" id="housesGrid"></section>
+    <aside class="right-rail">
+      <h2 class="rail-title">ROOMIES</h2>
+      <div class="rail-divider"></div>
+      <div class="rail-chips" id="trayWrap">
+        <div id="trayChips"></div>
+        <div class="rail-count" id="trayCount"></div>
+      </div>
+      <div class="rail-divider"></div>
+      <div class="rail-controls">
+        <button id="resetPlacementsBtn">RESET</button>
+        <button id="editSetupBtn">HOME</button>
+      </div>
+    </aside>
+  </div>
+  <footer>© 2026 Kibera LLC</footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<script>
+const AVATARS = [
+  '👧','🧒','👦','👶','👩‍🦰','👨‍🦱',
+  '🦸‍♀️','🦸‍♂️','🧚','🧙‍♂️','🧜‍♀️','🧝‍♀️',
+  '🐻','🦊','🐼','🦁','🐯','🐰',
+  '🐶','🐱','🦄','🐲','🐧','🦋'
+];
+
+const LS_KEY = 'rm_setup_v1';
+const LS_PLACEMENTS_KEY = 'rm_placements_v1';
+
+const HOUSE_PALETTES = [
+  { accent: '#7B4B94', light: '#B89BD0', pale: '#EAD9F4', soft: 'rgba(123,75,148,0.42)',  stripe: 'rgba(123,75,148,0.20)' }, // purple
+  { accent: '#3E8C5C', light: '#8FC4A4', pale: '#D7ECDE', soft: 'rgba(62,140,92,0.42)',   stripe: 'rgba(62,140,92,0.20)'  }, // green
+  { accent: '#D4A02E', light: '#E8C977', pale: '#F6E8C2', soft: 'rgba(212,160,46,0.45)',  stripe: 'rgba(212,160,46,0.22)' }, // sunshine
+  { accent: '#C8553A', light: '#E89380', pale: '#F7D9CF', soft: 'rgba(200,85,58,0.42)',   stripe: 'rgba(200,85,58,0.20)'  }, // cherry
+  { accent: '#2D8A8A', light: '#7BB8B8', pale: '#CFE5E5', soft: 'rgba(45,138,138,0.42)',  stripe: 'rgba(45,138,138,0.20)' }, // teal
+  { accent: '#D46B9E', light: '#EAA5C4', pale: '#F8DCE8', soft: 'rgba(212,107,158,0.42)', stripe: 'rgba(212,107,158,0.20)'}, // pink
+];
+
+function paletteForHouse(index) {
+  return HOUSE_PALETTES[index % HOUSE_PALETTES.length];
+}
+
+const BEDDING_THEMES = [
+  { // 1 pink hearts
+    color: '#FDE3EE', tile: 72, items: [
+      { e: '💗', x: 14, y: 22, s: 17, r: -18, o: 0.60 },
+      { e: '💗', x: 48, y: 14, s: 11, r: 12,  o: 0.50 },
+      { e: '💗', x: 30, y: 42, s: 14, r: -6,  o: 0.55 },
+      { e: '💗', x: 60, y: 50, s: 9,  r: 25,  o: 0.45 },
+      { e: '💗', x: 6,  y: 58, s: 12, r: 8,   o: 0.50 },
+      { e: '💗', x: 54, y: 66, s: 8,  r: -22, o: 0.45 },
+    ],
+  },
+  { // 2 mint stars
+    color: '#DCEFE0', tile: 72, items: [
+      { e: '⭐', x: 14, y: 18, s: 16, r: -8,  o: 0.55 },
+      { e: '⭐', x: 46, y: 26, s: 10, r: 22,  o: 0.50 },
+      { e: '⭐', x: 26, y: 46, s: 13, r: -16, o: 0.55 },
+      { e: '⭐', x: 60, y: 54, s: 9,  r: 10,  o: 0.45 },
+      { e: '⭐', x: 8,  y: 60, s: 11, r: 28,  o: 0.50 },
+      { e: '✨', x: 60, y: 10, s: 10, r: 0,   o: 0.50 },
+      { e: '✨', x: 38, y: 66, s: 9,  r: 0,   o: 0.45 },
+    ],
+  },
+  { // 3 lavender dots
+    color: '#E8DBF2', tile: 66, dotColor: 'rgba(123,75,148,0.45)',
+    dots: [
+      { x: 10, y: 14, r: 2.6 }, { x: 28, y: 8,  r: 1.4 }, { x: 48, y: 18, r: 2.9 },
+      { x: 18, y: 30, r: 1.7 }, { x: 38, y: 36, r: 2.2 }, { x: 56, y: 32, r: 1.3 },
+      { x: 8,  y: 50, r: 2.5 }, { x: 30, y: 54, r: 1.9 }, { x: 52, y: 58, r: 2.0 },
+    ],
+  },
+  { // 4 peach rainbows
+    color: '#FDE3D1', tile: 80, items: [
+      { e: '🌈', x: 16, y: 22, s: 18, r: -10, o: 0.60 },
+      { e: '🌈', x: 56, y: 16, s: 13, r: 14,  o: 0.50 },
+      { e: '🌈', x: 36, y: 46, s: 20, r: 0,   o: 0.55 },
+      { e: '🌈', x: 14, y: 62, s: 12, r: -8,  o: 0.50 },
+      { e: '🌈', x: 62, y: 64, s: 15, r: 18,  o: 0.55 },
+    ],
+  },
+  { // 5 sky clouds
+    color: '#DDEAF5', tile: 78, items: [
+      { e: '☁️', x: 18, y: 20, s: 18, r: 0, o: 0.60 },
+      { e: '☁️', x: 54, y: 14, s: 13, r: 0, o: 0.50 },
+      { e: '☁️', x: 30, y: 44, s: 22, r: 0, o: 0.55 },
+      { e: '☁️', x: 64, y: 50, s: 11, r: 0, o: 0.50 },
+      { e: '☁️', x: 14, y: 64, s: 16, r: 0, o: 0.55 },
+    ],
+  },
+  { // 6 lemon unicorns
+    color: '#FBEEC2', tile: 80, items: [
+      { e: '🦄', x: 16, y: 22, s: 17, r: -14, o: 0.60 },
+      { e: '🦄', x: 56, y: 16, s: 12, r: 10,  o: 0.50 },
+      { e: '🦄', x: 32, y: 46, s: 19, r: 0,   o: 0.55 },
+      { e: '🦄', x: 14, y: 62, s: 11, r: 8,   o: 0.50 },
+      { e: '🦄', x: 62, y: 64, s: 14, r: -10, o: 0.55 },
+      { e: '✨', x: 44, y: 30, s: 10, r: 0,   o: 0.55 },
+      { e: '✨', x: 66, y: 36, s: 8,  r: 0,   o: 0.50 },
+    ],
+  },
+  { // 7 lilac butterflies
+    color: '#EEDFF7', tile: 76, items: [
+      { e: '🦋', x: 14, y: 22, s: 18, r: -14, o: 0.60 },
+      { e: '🦋', x: 52, y: 14, s: 12, r: 20,  o: 0.50 },
+      { e: '🦋', x: 30, y: 46, s: 15, r: -5,  o: 0.55 },
+      { e: '🦋', x: 62, y: 52, s: 10, r: 25,  o: 0.45 },
+      { e: '🦋', x: 8,  y: 60, s: 13, r: 8,   o: 0.50 },
+    ],
+  },
+  { // 8 sage leaves
+    color: '#DCEAD7', tile: 72, items: [
+      { e: '🍃', x: 14, y: 22, s: 17, r: -25, o: 0.55 },
+      { e: '🍃', x: 48, y: 16, s: 12, r: 35,  o: 0.50 },
+      { e: '🍃', x: 30, y: 46, s: 15, r: -10, o: 0.55 },
+      { e: '🍃', x: 60, y: 54, s: 10, r: 20,  o: 0.50 },
+      { e: '🍃', x: 8,  y: 60, s: 13, r: 45,  o: 0.50 },
+      { e: '🌿', x: 42, y: 64, s: 12, r: 0,   o: 0.50 },
+    ],
+  },
+  { // 9 aqua waves
+    color: '#D6EBED', tile: 76, items: [
+      { e: '🌊', x: 14, y: 22, s: 18, r: 0,  o: 0.55 },
+      { e: '🌊', x: 50, y: 16, s: 13, r: 0,  o: 0.50 },
+      { e: '🌊', x: 30, y: 46, s: 20, r: 0,  o: 0.55 },
+      { e: '🌊', x: 62, y: 52, s: 11, r: 0,  o: 0.50 },
+      { e: '🌊', x: 10, y: 62, s: 15, r: 0,  o: 0.55 },
+    ],
+  },
+  { // 10 mint spirals
+    color: '#D9ECE7', tile: 74, items: [
+      { e: '🌀', x: 14, y: 22, s: 18, r: 0,  o: 0.55 },
+      { e: '🌀', x: 50, y: 14, s: 12, r: 0,  o: 0.50 },
+      { e: '🌀', x: 30, y: 46, s: 16, r: 0,  o: 0.55 },
+      { e: '🌀', x: 60, y: 52, s: 10, r: 0,  o: 0.45 },
+      { e: '🌀', x: 8,  y: 60, s: 13, r: 0,  o: 0.50 },
+    ],
+  },
+  { // 11 cream cherries
+    color: '#FBE4D8', tile: 72, items: [
+      { e: '🍒', x: 14, y: 22, s: 16, r: -10, o: 0.55 },
+      { e: '🍒', x: 46, y: 16, s: 11, r: 12,  o: 0.50 },
+      { e: '🍒', x: 30, y: 46, s: 14, r: -5,  o: 0.55 },
+      { e: '🍒', x: 58, y: 52, s: 9,  r: 18,  o: 0.45 },
+      { e: '🍒', x: 8,  y: 60, s: 12, r: 0,   o: 0.50 },
+    ],
+  },
+  { // 12 twilight moons
+    color: '#DDD8EE', tile: 74, items: [
+      { e: '🌙', x: 14, y: 22, s: 18, r: 0,   o: 0.55 },
+      { e: '🌙', x: 50, y: 16, s: 12, r: 25,  o: 0.50 },
+      { e: '🌙', x: 30, y: 46, s: 16, r: -15, o: 0.55 },
+      { e: '🌙', x: 60, y: 54, s: 10, r: 10,  o: 0.45 },
+      { e: '✨', x: 38, y: 30, s: 9,  r: 0,   o: 0.55 },
+      { e: '✨', x: 62, y: 36, s: 8,  r: 0,   o: 0.50 },
+      { e: '✨', x: 18, y: 60, s: 9,  r: 0,   o: 0.45 },
+    ],
+  },
+  { // 13 rose flowers
+    color: '#FBE0EA', tile: 76, items: [
+      { e: '🌸', x: 14, y: 22, s: 17, r: -8,  o: 0.55 },
+      { e: '🌸', x: 50, y: 14, s: 12, r: 15,  o: 0.50 },
+      { e: '🌸', x: 30, y: 46, s: 18, r: 0,   o: 0.55 },
+      { e: '🌸', x: 62, y: 52, s: 11, r: -10, o: 0.50 },
+      { e: '🌸', x: 8,  y: 60, s: 14, r: 8,   o: 0.50 },
+    ],
+  },
+  { // 14 icy snowflakes
+    color: '#DDE9F0', tile: 72, items: [
+      { e: '❄️', x: 14, y: 22, s: 16, r: 0,  o: 0.55 },
+      { e: '❄️', x: 48, y: 14, s: 11, r: 0,  o: 0.50 },
+      { e: '❄️', x: 30, y: 46, s: 15, r: 0,  o: 0.55 },
+      { e: '❄️', x: 60, y: 52, s: 10, r: 0,  o: 0.50 },
+      { e: '❄️', x: 8,  y: 60, s: 13, r: 0,  o: 0.50 },
+    ],
+  },
+  { // 15 peach bows
+    color: '#FCE3D2', tile: 76, items: [
+      { e: '🎀', x: 14, y: 22, s: 17, r: -12, o: 0.55 },
+      { e: '🎀', x: 50, y: 16, s: 12, r: 10,  o: 0.50 },
+      { e: '🎀', x: 30, y: 46, s: 16, r: 0,   o: 0.55 },
+      { e: '🎀', x: 60, y: 52, s: 11, r: 18,  o: 0.45 },
+      { e: '🎀', x: 10, y: 60, s: 14, r: -8,  o: 0.50 },
+    ],
+  },
+  { // 16 lemon suns
+    color: '#FBEAB8', tile: 76, items: [
+      { e: '☀️', x: 14, y: 22, s: 17, r: 0,  o: 0.55 },
+      { e: '☀️', x: 50, y: 14, s: 13, r: 0,  o: 0.50 },
+      { e: '☀️', x: 30, y: 46, s: 18, r: 0,  o: 0.55 },
+      { e: '☀️', x: 60, y: 52, s: 11, r: 0,  o: 0.50 },
+      { e: '☀️', x: 10, y: 62, s: 14, r: 0,  o: 0.50 },
+    ],
+  },
+];
+
+const CRIB_MATTRESS_COLORS = [
+  '#FDE3EE', '#DCEFE0', '#E8DBF2', '#FDE3D1',
+  '#DDEAF5', '#FBEEC2', '#EEDFF7', '#DCEAD7',
+  '#D6EBED', '#FBE4D8', '#DDD8EE', '#FBE0EA',
+];
+
+function buildBeddingSvg(theme) {
+  let inner = '';
+  if (theme.dots) {
+    inner += theme.dots.map(d =>
+      "<circle cx='" + d.x + "' cy='" + d.y + "' r='" + d.r + "' fill='" + theme.dotColor + "'/>"
+    ).join('');
+  }
+  if (theme.items) {
+    inner += theme.items.map(it =>
+      "<text x='" + it.x + "' y='" + it.y + "' font-size='" + it.s +
+      "' transform='rotate(" + it.r + " " + it.x + " " + it.y + ")' opacity='" + it.o + "'>" + it.e + "</text>"
+    ).join('');
+  }
+  return "<svg xmlns='http://www.w3.org/2000/svg' width='" + theme.tile + "' height='" + theme.tile + "'>" + inner + "</svg>";
+}
+
+function applyBedding(blanket, theme) {
+  blanket.style.backgroundColor = theme.color;
+  blanket.style.backgroundImage = "url(\"data:image/svg+xml;utf8," + encodeURIComponent(buildBeddingSvg(theme)) + "\")";
+  blanket.style.backgroundSize = theme.tile + 'px ' + theme.tile + 'px';
+  blanket.style.backgroundRepeat = 'repeat';
+}
+
+let state = {};
+
+function uid() {
+  return Math.random().toString(36).slice(2, 9);
+}
+
+function defaults() {
+  return {
+    adventure: { title: '', subtitle: '' },
+    houses: [
+      makeHouse('House 1', 1),
+      makeHouse('House 2', 2)
+    ],
+    kids: [],
+    auPairs: []
+  };
+}
+
+function makeHouse(name, n) {
+  return {
+    id: uid(),
+    name: name,
+    rooms: [
+      makeRoom('Bedroom 1'),
+      makeRoom('Bedroom 2'),
+      makeRoom('Bedroom 3')
+    ]
+  };
+}
+
+function makeRoom(name) {
+  return { id: uid(), name: name, beds: 2, cribs: 0 };
+}
+
+function load() {
+  let loaded = null;
+  try {
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw) loaded = JSON.parse(raw);
+  } catch(e) {}
+  state = loaded || defaults();
+  loadPlacements();
+}
+
+function save() {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(state));
+  } catch(e) {}
+}
+
+function defaultPlacements() {
+  return { kids: {}, auPairs: {} };
+}
+
+function loadPlacements() {
+  let raw = null;
+  try { raw = localStorage.getItem(LS_PLACEMENTS_KEY); } catch(e) {}
+  if (!raw) {
+    state.placements = defaultPlacements();
+    return;
+  }
+  try {
+    const parsed = JSON.parse(raw);
+    state.placements = sanitizePlacements(parsed || {});
+  } catch(e) {
+    state.placements = defaultPlacements();
+  }
+}
+
+function savePlacements() {
+  try {
+    localStorage.setItem(LS_PLACEMENTS_KEY, JSON.stringify(state.placements));
+  } catch(e) {}
+}
+
+function resetPlacements() {
+  state.placements = defaultPlacements();
+  savePlacements();
+  if (!document.getElementById('play').hidden) renderPlay();
+}
+
+function sanitizePlacements(p) {
+  const result = { kids: {}, auPairs: {} };
+  const houseById = {};
+  for (const h of state.houses) {
+    houseById[h.id] = { house: h, roomById: {} };
+    for (const r of h.rooms) {
+      houseById[h.id].roomById[r.id] = r;
+    }
+  }
+
+  const bedOccupancy = {};
+  const cribOccupancy = new Set();
+
+  if (p && p.kids && typeof p.kids === 'object') {
+    for (const kid of state.kids) {
+      const placement = p.kids[kid.id];
+      if (!placement) continue;
+      const houseEntry = houseById[placement.houseId];
+      if (!houseEntry) continue;
+      const room = houseEntry.roomById[placement.roomId];
+      if (!room) continue;
+      if (placement.slotType === 'bed') {
+        if (typeof placement.slotIndex !== 'number' || placement.slotIndex < 0 || placement.slotIndex >= room.beds) continue;
+        const subSlot = placement.bedSubSlot === 1 ? 1 : 0;
+        const key = placement.houseId + '|' + placement.roomId + '|' + placement.slotIndex;
+        if (!bedOccupancy[key]) bedOccupancy[key] = new Set();
+        if (bedOccupancy[key].has(subSlot)) continue;
+        if (bedOccupancy[key].size >= 2) continue;
+        bedOccupancy[key].add(subSlot);
+        result.kids[kid.id] = {
+          houseId: placement.houseId,
+          roomId: placement.roomId,
+          slotType: 'bed',
+          slotIndex: placement.slotIndex,
+          bedSubSlot: subSlot
+        };
+      } else if (placement.slotType === 'crib') {
+        if (typeof placement.slotIndex !== 'number' || placement.slotIndex < 0 || placement.slotIndex >= room.cribs) continue;
+        const ageNum = Number(kid.age);
+        if (!isNaN(ageNum) && ageNum >= 6) continue;
+        const key = placement.houseId + '|' + placement.roomId + '|' + placement.slotIndex;
+        if (cribOccupancy.has(key)) continue;
+        cribOccupancy.add(key);
+        result.kids[kid.id] = {
+          houseId: placement.houseId,
+          roomId: placement.roomId,
+          slotType: 'crib',
+          slotIndex: placement.slotIndex
+        };
+      }
+    }
+  }
+
+  if (p && p.auPairs && typeof p.auPairs === 'object') {
+    const usedHouses = new Set();
+    for (const ap of state.auPairs) {
+      const placement = p.auPairs[ap.id];
+      if (!placement) continue;
+      if (placement.slotType !== 'bed') continue;
+      const houseEntry = houseById[placement.houseId];
+      if (!houseEntry) continue;
+      const room = houseEntry.roomById[placement.roomId];
+      if (!room) continue;
+      if (typeof placement.slotIndex !== 'number' || placement.slotIndex < 0 || placement.slotIndex >= room.beds) continue;
+      if (usedHouses.has(placement.houseId)) continue;
+      const subSlot = placement.bedSubSlot === 1 ? 1 : 0;
+      const key = placement.houseId + '|' + placement.roomId + '|' + placement.slotIndex;
+      if (!bedOccupancy[key]) bedOccupancy[key] = new Set();
+      if (bedOccupancy[key].has(subSlot)) continue;
+      if (bedOccupancy[key].size >= 2) continue;
+      bedOccupancy[key].add(subSlot);
+      usedHouses.add(placement.houseId);
+      result.auPairs[ap.id] = {
+        houseId: placement.houseId,
+        roomId: placement.roomId,
+        slotType: 'bed',
+        slotIndex: placement.slotIndex,
+        bedSubSlot: subSlot
+      };
+    }
+  }
+
+  return result;
+}
+
+function totalCapacity() {
+  let cap = 0;
+  for (const h of state.houses) {
+    for (const r of h.rooms) {
+      cap += r.beds * 2 + r.cribs;
+    }
+  }
+  return cap;
+}
+
+function validate() {
+  const kids = state.kids;
+  const auPairs = state.auPairs;
+
+  if (kids.length === 0 && auPairs.length === 0) {
+    return { ok: false, message: 'Add at least one kid or au pair to begin.' };
+  }
+
+  for (const k of kids) {
+    if (!k.name.trim()) return { ok: false, message: 'Every kid needs a name.' };
+    if (k.age === '' || k.age === null || k.age === undefined || isNaN(Number(k.age))) {
+      return { ok: false, message: 'Every kid needs an age.' };
+    }
+  }
+
+  for (const a of auPairs) {
+    if (!a.name.trim()) return { ok: false, message: 'Every au pair needs a name.' };
+  }
+
+  const cap = totalCapacity();
+  if (cap < kids.length) {
+    const diff = kids.length - cap;
+    return { ok: false, message: `Need ${diff} more bed/crib spot${diff !== 1 ? 's' : ''} for ${kids.length} kid${kids.length !== 1 ? 's' : ''}.` };
+  }
+
+  if (auPairs.length > state.houses.length) {
+    return { ok: false, message: `Max ${state.houses.length} au pair${state.houses.length !== 1 ? 's' : ''} for ${state.houses.length} house${state.houses.length !== 1 ? 's' : ''}.` };
+  }
+
+  const kn = kids.length, an = auPairs.length;
+  const spots = cap;
+  if (kn > 0 || an > 0) {
+    return {
+      ok: true,
+      message: `Ready — ${kn} kid${kn !== 1 ? 's' : ''} in ${spots} spot${spots !== 1 ? 's' : ''}${an > 0 ? `, ${an} au pair${an !== 1 ? 's' : ''} for ${state.houses.length} house${state.houses.length !== 1 ? 's' : ''}` : ''}.`
+    };
+  }
+
+  return { ok: false, message: '' };
+}
+
+function joinNames(names) {
+  if (names.length === 0) return '';
+  if (names.length === 1) return names[0];
+  if (names.length === 2) return names[0] + ' and ' + names[1];
+  return names.slice(0, -1).join(', ') + ', and ' + names[names.length - 1];
+}
+
+function generateSubtitle() {
+  if (state.adventure.subtitle.trim()) return state.adventure.subtitle.trim();
+  const kids = state.kids.map(k => k.name.trim()).filter(Boolean);
+  if (kids.length > 0) return 'A summer adventure featuring ' + joinNames(kids);
+  const aps = state.auPairs.map(a => a.name.trim()).filter(Boolean);
+  if (aps.length > 0) return 'A summer adventure featuring ' + joinNames(aps);
+  return 'A summer adventure';
+}
+
+let activeAvatarTarget = null;
+
+function openAvatarPopover(btn, personId, kind) {
+  const pop = document.getElementById('avatarPopover');
+  pop.innerHTML = '';
+
+  const person = kind === 'kid'
+    ? state.kids.find(k => k.id === personId)
+    : state.auPairs.find(a => a.id === personId);
+
+  AVATARS.forEach(em => {
+    const opt = document.createElement('button');
+    opt.className = 'avatar-opt' + (person && person.avatar === em ? ' selected' : '');
+    opt.textContent = em;
+    opt.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (kind === 'kid') {
+        const k = state.kids.find(k => k.id === personId);
+        if (k) k.avatar = em;
+      } else {
+        const a = state.auPairs.find(a => a.id === personId);
+        if (a) a.avatar = em;
+      }
+      closeAvatarPopover();
+      renderSetup();
+      save();
+    });
+    pop.appendChild(opt);
+  });
+
+  const rect = btn.getBoundingClientRect();
+  pop.classList.remove('hidden');
+
+  const popW = 240;
+  let left = rect.left;
+  if (left + popW > window.innerWidth - 12) left = window.innerWidth - popW - 12;
+  if (left < 12) left = 12;
+
+  let top = rect.bottom + 6;
+  const popH = 160;
+  if (top + popH > window.innerHeight - 12) top = rect.top - popH - 6;
+
+  pop.style.left = left + 'px';
+  pop.style.top = top + 'px';
+  activeAvatarTarget = personId;
+}
+
+function closeAvatarPopover() {
+  const pop = document.getElementById('avatarPopover');
+  pop.classList.add('hidden');
+  activeAvatarTarget = null;
+}
+
+function makeStepper(attrName, id, val, min, max, small) {
+  const d = document.createElement('div');
+  d.className = 'stepper';
+  d.dataset[attrName] = id;
+  const s = small ? ' style="width:24px;height:24px"' : '';
+  d.innerHTML = `<button class="stepper-btn" data-dir="-1"${s}${val<=min?' disabled':''}>−</button>`
+    + `<span class="stepper-val"${small?' style="font-size:0.9rem"':''}>${val}</span>`
+    + `<button class="stepper-btn" data-dir="1"${s}${val>=max?' disabled':''}>+</button>`;
+  return d;
+}
+
+function renderHouses() {
+  const list = document.getElementById('housesList');
+  list.innerHTML = '';
+
+  state.houses.forEach((house, hi) => {
+    const hb = document.createElement('div');
+    hb.className = 'house-block';
+    hb.dataset.houseId = house.id;
+
+    const nameRow = document.createElement('div');
+    nameRow.className = 'house-name-row';
+    const ni = document.createElement('input');
+    ni.type = 'text';
+    ni.value = house.name;
+    ni.placeholder = 'House ' + (hi + 1);
+    ni.maxLength = 40;
+    ni.dataset.field = 'houseName';
+    ni.dataset.houseId = house.id;
+    nameRow.appendChild(ni);
+    hb.appendChild(nameRow);
+
+    const rb = document.createElement('div');
+    rb.className = 'room-block';
+    const rsh = document.createElement('div');
+    rsh.className = 'room-sub-header';
+    rsh.innerHTML = '<span class="sub-title" style="font-size:0.88rem">Bedrooms</span>';
+    rsh.appendChild(makeStepper('roomStepper', house.id, house.rooms.length, 1, 8, false));
+    rb.appendChild(rsh);
+
+    house.rooms.forEach((room, ri) => {
+      const rr = document.createElement('div');
+      rr.className = 'room-row';
+      rr.dataset.roomId = room.id;
+
+      const rni = document.createElement('input');
+      rni.type = 'text';
+      rni.value = room.name;
+      rni.placeholder = 'Bedroom ' + (ri + 1);
+      rni.maxLength = 40;
+      rni.dataset.field = 'roomName';
+      rni.dataset.roomId = room.id;
+      rr.appendChild(rni);
+
+      const furn = document.createElement('div');
+      furn.className = 'room-furniture';
+      const bedsLblEl = document.createElement('span');
+      bedsLblEl.className = 'furniture-label';
+      bedsLblEl.textContent = 'Beds';
+      furn.appendChild(bedsLblEl);
+      furn.appendChild(makeStepper('bedStepper', room.id, room.beds, 0, 4, true));
+      const cribsLblEl = document.createElement('span');
+      cribsLblEl.className = 'furniture-label';
+      cribsLblEl.textContent = 'Cribs';
+      furn.appendChild(cribsLblEl);
+      furn.appendChild(makeStepper('cribStepper', room.id, room.cribs, 0, 3, true));
+
+      rr.appendChild(furn);
+      rb.appendChild(rr);
+    });
+
+    hb.appendChild(rb);
+    list.appendChild(hb);
+  });
+}
+
+function renderKids() {
+  const list = document.getElementById('kidsList');
+  list.innerHTML = '';
+  document.getElementById('kidsVal').textContent = state.kids.length;
+
+  state.kids.forEach((kid) => {
+    const row = document.createElement('div');
+    row.className = 'roommate-row';
+    row.dataset.kidId = kid.id;
+
+    const avatarBtn = document.createElement('button');
+    avatarBtn.className = 'avatar-btn';
+    avatarBtn.textContent = kid.avatar || '👶';
+    avatarBtn.dataset.avatarKind = 'kid';
+    avatarBtn.dataset.personId = kid.id;
+
+    const nameIn = document.createElement('input');
+    nameIn.type = 'text';
+    nameIn.value = kid.name;
+    nameIn.placeholder = 'Name';
+    nameIn.maxLength = 30;
+    nameIn.dataset.field = 'kidName';
+    nameIn.dataset.kidId = kid.id;
+
+    const ageIn = document.createElement('input');
+    ageIn.type = 'number';
+    ageIn.value = kid.age === undefined ? '' : kid.age;
+    ageIn.placeholder = 'Age';
+    ageIn.min = 0;
+    ageIn.max = 18;
+    ageIn.dataset.field = 'kidAge';
+    ageIn.dataset.kidId = kid.id;
+
+    row.appendChild(avatarBtn);
+    row.appendChild(nameIn);
+    row.appendChild(ageIn);
+    list.appendChild(row);
+  });
+
+  const kidsStepper = document.getElementById('kidsStepper');
+  kidsStepper.querySelector('[data-dir="-1"]').disabled = state.kids.length <= 0;
+  kidsStepper.querySelector('[data-dir="1"]').disabled = state.kids.length >= 20;
+}
+
+function renderAuPairs() {
+  const list = document.getElementById('auPairsList');
+  list.innerHTML = '';
+  document.getElementById('auPairsVal').textContent = state.auPairs.length;
+
+  state.auPairs.forEach((ap) => {
+    const row = document.createElement('div');
+    row.className = 'roommate-row';
+    row.dataset.apId = ap.id;
+
+    const avatarBtn = document.createElement('button');
+    avatarBtn.className = 'avatar-btn';
+    avatarBtn.textContent = ap.avatar || '🧑';
+    avatarBtn.dataset.avatarKind = 'aupair';
+    avatarBtn.dataset.personId = ap.id;
+
+    const nameIn = document.createElement('input');
+    nameIn.type = 'text';
+    nameIn.value = ap.name;
+    nameIn.placeholder = 'Name';
+    nameIn.maxLength = 30;
+    nameIn.dataset.field = 'apName';
+    nameIn.dataset.apId = ap.id;
+
+    row.appendChild(avatarBtn);
+    row.appendChild(nameIn);
+    list.appendChild(row);
+  });
+
+  const apStepper = document.getElementById('auPairsStepper');
+  apStepper.querySelector('[data-dir="-1"]').disabled = state.auPairs.length <= 0;
+  apStepper.querySelector('[data-dir="1"]').disabled = state.auPairs.length >= state.houses.length;
+}
+
+function renderValidation() {
+  const result = validate();
+  const msg = document.getElementById('validationMsg');
+  msg.textContent = result.message;
+  msg.className = 'validation-msg' + (result.ok ? ' ready' : (result.message ? ' error' : ''));
+  document.getElementById('beginBtn').disabled = !result.ok;
+}
+
+function renderSetup() {
+  document.getElementById('advTitle').value = state.adventure.title;
+  document.getElementById('advSubtitle').value = state.adventure.subtitle;
+  document.getElementById('housesVal').textContent = state.houses.length;
+
+  const hStepper = document.getElementById('housesStepper');
+  hStepper.querySelector('[data-dir="-1"]').disabled = state.houses.length <= 1;
+  hStepper.querySelector('[data-dir="1"]').disabled = state.houses.length >= 6;
+
+  renderHouses();
+  renderKids();
+  renderAuPairs();
+  renderValidation();
+}
+
+function chipNodeForKid(kid, mode) {
+  const chip = document.createElement('div');
+  chip.className = mode === 'tray' ? 'tray-chip' : 'placed-chip';
+  chip.dataset.personId = kid.id;
+  chip.dataset.personKind = 'kid';
+  const av = document.createElement('span');
+  av.className = 'avatar';
+  av.textContent = kid.avatar || '👶';
+  const nm = document.createElement('span');
+  nm.className = 'name';
+  nm.textContent = (kid.name || '').trim() || '—';
+  const ag = document.createElement('span');
+  ag.className = 'age';
+  const ageDisplay = (kid.age === '' || kid.age === undefined || kid.age === null) ? '?' : kid.age;
+  ag.textContent = '· ' + ageDisplay;
+  chip.appendChild(av);
+  chip.appendChild(nm);
+  chip.appendChild(ag);
+  return chip;
+}
+
+function chipNodeForAuPair(ap, mode) {
+  const chip = document.createElement('div');
+  chip.className = mode === 'tray' ? 'tray-chip' : 'placed-chip';
+  chip.dataset.personId = ap.id;
+  chip.dataset.personKind = 'aupair';
+  const av = document.createElement('span');
+  av.className = 'avatar';
+  av.textContent = ap.avatar || '🧑';
+  const nm = document.createElement('span');
+  nm.className = 'name';
+  nm.textContent = (ap.name || '').trim() || '—';
+  const lbl = document.createElement('span');
+  lbl.className = 'age';
+  lbl.textContent = '· au pair';
+  chip.appendChild(av);
+  chip.appendChild(nm);
+  chip.appendChild(lbl);
+  return chip;
+}
+
+function getOccupantsInBedSlot(houseId, roomId, slotIndex) {
+  const out = [];
+  for (const kid of state.kids) {
+    const p = state.placements.kids[kid.id];
+    if (!p || p.slotType !== 'bed') continue;
+    if (p.houseId === houseId && p.roomId === roomId && p.slotIndex === slotIndex) {
+      out.push({ person: kid, kind: 'kid', subSlot: p.bedSubSlot || 0 });
+    }
+  }
+  for (const ap of state.auPairs) {
+    const p = state.placements.auPairs[ap.id];
+    if (!p || p.slotType !== 'bed') continue;
+    if (p.houseId === houseId && p.roomId === roomId && p.slotIndex === slotIndex) {
+      out.push({ person: ap, kind: 'aupair', subSlot: p.bedSubSlot || 0 });
+    }
+  }
+  out.sort((a, b) => a.subSlot - b.subSlot);
+  return out;
+}
+
+function getKidInCribSlot(houseId, roomId, slotIndex) {
+  for (const kid of state.kids) {
+    const p = state.placements.kids[kid.id];
+    if (!p || p.slotType !== 'crib') continue;
+    if (p.houseId === houseId && p.roomId === roomId && p.slotIndex === slotIndex) return kid;
+  }
+  return null;
+}
+
+function getAuPairForHouse(houseId) {
+  for (const ap of state.auPairs) {
+    const p = state.placements.auPairs[ap.id];
+    if (p && p.houseId === houseId) return ap;
+  }
+  return null;
+}
+
+function getHouseSummary(house) {
+  const auPair = getAuPairForHouse(house.id);
+  const prefix = auPair
+    ? (((auPair.name || '').trim() || 'Au pair') + "'s House: ")
+    : (house.name + ': ');
+  const roomParts = [];
+  for (const room of house.rooms) {
+    const parts = [];
+    for (let bi = 0; bi < room.beds; bi++) {
+      const occs = getOccupantsInBedSlot(house.id, room.id, bi);
+      if (occs.length === 0) continue;
+      const names = occs.map(o => {
+        if (o.kind === 'kid') {
+          const k = o.person;
+          const age = (k.age === '' || k.age === undefined || k.age === null) ? '?' : k.age;
+          return ((k.name || '').trim() || '—') + ' (' + age + ')';
+        }
+        return ((o.person.name || '').trim() || '—') + ' (au pair)';
+      });
+      parts.push(names.join(' & '));
+    }
+    for (let ci = 0; ci < room.cribs; ci++) {
+      const occ = getKidInCribSlot(house.id, room.id, ci);
+      if (!occ) continue;
+      const age = (occ.age === '' || occ.age === undefined || occ.age === null) ? '?' : occ.age;
+      parts.push(((occ.name || '').trim() || '—') + ' (' + age + ')');
+    }
+    if (parts.length === 0) continue;
+    roomParts.push(parts.join(', '));
+  }
+  if (roomParts.length === 0) return prefix + 'empty';
+  return prefix + roomParts.join(', ');
+}
+
+function renderHousesGrid() {
+  const grid = document.getElementById('housesGrid');
+  grid.innerHTML = '';
+  let bedSeq = 0;
+  let cribSeq = 0;
+
+  state.houses.forEach((house, hi) => {
+    const auPair = getAuPairForHouse(house.id);
+    const card = document.createElement('div');
+    card.className = 'house-card';
+    card.dataset.houseId = house.id;
+    const palette = paletteForHouse(hi);
+    card.style.setProperty('--house-accent', palette.accent);
+    card.style.setProperty('--house-accent-light', palette.light);
+    card.style.setProperty('--house-accent-pale', palette.pale);
+    card.style.setProperty('--house-accent-soft', palette.soft);
+    card.style.setProperty('--house-accent-stripe', palette.stripe);
+
+    const header = document.createElement('div');
+    header.className = 'house-card-header';
+
+    const title = document.createElement('h3');
+    title.className = 'house-title';
+    title.textContent = auPair
+      ? (((auPair.name || '').trim() || 'Au pair') + "'s House")
+      : house.name;
+    header.appendChild(title);
+    card.appendChild(header);
+
+    const floor = document.createElement('div');
+    floor.className = 'house-floor';
+    for (const room of house.rooms) {
+      const cell = document.createElement('div');
+      cell.className = 'room-cell';
+
+      const rn = document.createElement('div');
+      rn.className = 'room-cell-name';
+      rn.textContent = room.name;
+      cell.appendChild(rn);
+
+      if (room.beds === 0 && room.cribs === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'room-cell-empty';
+        empty.textContent = '(no furniture)';
+        cell.appendChild(empty);
+      } else {
+        const furniture = document.createElement('div');
+        furniture.className = 'room-furniture';
+
+        for (let bi = 0; bi < room.beds; bi++) {
+          const row = document.createElement('div');
+          row.className = 'bed-row';
+
+          const bed = document.createElement('div');
+          bed.className = 'bed-slot';
+          bed.dataset.slotType = 'bed';
+          bed.dataset.houseId = house.id;
+          bed.dataset.roomId = room.id;
+          bed.dataset.slotIndex = String(bi);
+
+          const headboard = document.createElement('div');
+          headboard.className = 'bed-headboard';
+          const pillowTop = document.createElement('div');
+          pillowTop.className = 'bed-pillow top';
+          const pillowBottom = document.createElement('div');
+          pillowBottom.className = 'bed-pillow bottom';
+          const blanket = document.createElement('div');
+          blanket.className = 'bed-blanket';
+          applyBedding(blanket, BEDDING_THEMES[bedSeq % BEDDING_THEMES.length]);
+          bedSeq++;
+          bed.appendChild(headboard);
+          bed.appendChild(pillowTop);
+          bed.appendChild(pillowBottom);
+          bed.appendChild(blanket);
+
+          const occupants = getOccupantsInBedSlot(house.id, room.id, bi);
+          for (const o of occupants) {
+            const chip = o.kind === 'kid'
+              ? chipNodeForKid(o.person, 'placed')
+              : chipNodeForAuPair(o.person, 'placed');
+            chip.style.gridRow = String((o.subSlot || 0) + 1);
+            bed.appendChild(chip);
+          }
+          row.appendChild(bed);
+          furniture.appendChild(row);
+        }
+
+        if (room.cribs > 0) {
+          const cribsRow = document.createElement('div');
+          cribsRow.className = 'crib-row';
+          for (let ci = 0; ci < room.cribs; ci++) {
+            const crib = document.createElement('div');
+            crib.className = 'crib-slot';
+            crib.dataset.slotType = 'crib';
+            crib.dataset.houseId = house.id;
+            crib.dataset.roomId = room.id;
+            crib.dataset.slotIndex = String(ci);
+
+            const cribHeadboard = document.createElement('div');
+            cribHeadboard.className = 'crib-headboard';
+            const cribMarker = document.createElement('div');
+            cribMarker.className = 'crib-marker';
+            cribMarker.textContent = '👶';
+            const cribMattress = document.createElement('div');
+            cribMattress.className = 'crib-mattress';
+            cribMattress.style.backgroundColor = CRIB_MATTRESS_COLORS[cribSeq % CRIB_MATTRESS_COLORS.length];
+            cribSeq++;
+            crib.appendChild(cribHeadboard);
+            crib.appendChild(cribMarker);
+            crib.appendChild(cribMattress);
+
+            const occ = getKidInCribSlot(house.id, room.id, ci);
+            if (occ) crib.appendChild(chipNodeForKid(occ, 'placed'));
+            cribsRow.appendChild(crib);
+          }
+          furniture.appendChild(cribsRow);
+        }
+
+        cell.appendChild(furniture);
+      }
+      floor.appendChild(cell);
+    }
+    card.appendChild(floor);
+
+    const summary = document.createElement('div');
+    summary.className = 'house-summary';
+    summary.textContent = getHouseSummary(house);
+    card.appendChild(summary);
+
+    grid.appendChild(card);
+  });
+}
+
+function renderTray() {
+  const trayChips = document.getElementById('trayChips');
+  const trayCount = document.getElementById('trayCount');
+  trayChips.innerHTML = '';
+
+  const unplacedKids = state.kids.filter(k => !state.placements.kids[k.id]);
+  const unplacedAuPairs = state.auPairs.filter(a => !state.placements.auPairs[a.id]);
+
+  for (const kid of unplacedKids) trayChips.appendChild(chipNodeForKid(kid, 'tray'));
+  for (const ap of unplacedAuPairs) trayChips.appendChild(chipNodeForAuPair(ap, 'tray'));
+
+  const total = unplacedKids.length + unplacedAuPairs.length;
+  if (total === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'tray-empty';
+    empty.textContent = '— All placed ✦ —';
+    trayChips.appendChild(empty);
+    trayCount.textContent = 'All placed ✦';
+  } else {
+    trayCount.textContent = total + ' to place';
+  }
+}
+
+function renderPlay() {
+  document.getElementById('playTitle').textContent = state.adventure.title.trim() || 'Our Adventure';
+  document.getElementById('playSubtitle').textContent = generateSubtitle();
+  renderHousesGrid();
+  renderTray();
+}
+
+function showSetup() {
+  document.getElementById('setup').classList.add('show');
+  document.getElementById('play').hidden = true;
+  renderSetup();
+}
+
+function showPlay() {
+  save();
+  document.getElementById('setup').classList.remove('show');
+  document.getElementById('play').hidden = false;
+  renderPlay();
+  history.replaceState(null, '', '#play');
+}
+
+function handleHousesStepper(dir) {
+  const n = state.houses.length + dir;
+  if (n < 1 || n > 6) return;
+  if (dir === 1) {
+    state.houses.push(makeHouse('House ' + (state.houses.length + 1), state.houses.length + 1));
+  } else {
+    state.houses.pop();
+    if (state.auPairs.length > state.houses.length) {
+      state.auPairs = state.auPairs.slice(0, state.houses.length);
+    }
+  }
+  save();
+  renderSetup();
+}
+
+function handleRoomStepper(houseId, dir) {
+  const house = state.houses.find(h => h.id === houseId);
+  if (!house) return;
+  const n = house.rooms.length + dir;
+  if (n < 1 || n > 8) return;
+  if (dir === 1) {
+    house.rooms.push(makeRoom('Bedroom ' + (house.rooms.length + 1)));
+  } else {
+    house.rooms.pop();
+  }
+  save();
+  renderSetup();
+}
+
+function handleBedStepper(roomId, dir) {
+  for (const h of state.houses) {
+    const r = h.rooms.find(r => r.id === roomId);
+    if (r) {
+      const n = r.beds + dir;
+      if (n < 0 || n > 4) return;
+      r.beds = n;
+      break;
+    }
+  }
+  save();
+  renderSetup();
+}
+
+function handleCribStepper(roomId, dir) {
+  for (const h of state.houses) {
+    const r = h.rooms.find(r => r.id === roomId);
+    if (r) {
+      const n = r.cribs + dir;
+      if (n < 0 || n > 3) return;
+      r.cribs = n;
+      break;
+    }
+  }
+  save();
+  renderSetup();
+}
+
+function handleKidsStepper(dir) {
+  const n = state.kids.length + dir;
+  if (n < 0 || n > 20) return;
+  if (dir === 1) {
+    state.kids.push({ id: uid(), name: '', age: '', avatar: AVATARS[Math.floor(Math.random() * 6)] });
+  } else {
+    state.kids.pop();
+  }
+  save();
+  renderSetup();
+}
+
+function handleAuPairsStepper(dir) {
+  const max = state.houses.length;
+  const n = state.auPairs.length + dir;
+  if (n < 0 || n > max) return;
+  if (dir === 1) {
+    state.auPairs.push({ id: uid(), name: '', avatar: AVATARS[12 + Math.floor(Math.random() * 12)] });
+  } else {
+    state.auPairs.pop();
+  }
+  save();
+  renderSetup();
+}
+
+document.getElementById('setup').addEventListener('click', function(e) {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+
+  if (btn.id === 'beginBtn') {
+    const v = validate();
+    if (v.ok) showPlay();
+    return;
+  }
+
+  if (btn.id === 'resetBtn') {
+    state = defaults();
+    save();
+    renderSetup();
+    return;
+  }
+
+  if (btn.dataset.avatarKind) {
+    openAvatarPopover(btn, btn.dataset.personId, btn.dataset.avatarKind === 'kid' ? 'kid' : 'aupair');
+    return;
+  }
+
+  const housesStepper = btn.closest('[data-key="houses"]');
+  if (housesStepper) {
+    handleHousesStepper(parseInt(btn.dataset.dir, 10));
+    return;
+  }
+
+  const kidsStepper = btn.closest('[data-key="kids"]');
+  if (kidsStepper) {
+    handleKidsStepper(parseInt(btn.dataset.dir, 10));
+    return;
+  }
+
+  const auPairsStepper = btn.closest('[data-key="aupairs"]');
+  if (auPairsStepper) {
+    handleAuPairsStepper(parseInt(btn.dataset.dir, 10));
+    return;
+  }
+
+  const roomStepper = btn.closest('[data-room-stepper]');
+  if (roomStepper) {
+    handleRoomStepper(roomStepper.dataset.roomStepper, parseInt(btn.dataset.dir, 10));
+    return;
+  }
+
+  const bedStepper = btn.closest('[data-bed-stepper]');
+  if (bedStepper) {
+    handleBedStepper(bedStepper.dataset.bedStepper, parseInt(btn.dataset.dir, 10));
+    return;
+  }
+
+  const cribStepper = btn.closest('[data-crib-stepper]');
+  if (cribStepper) {
+    handleCribStepper(cribStepper.dataset.cribStepper, parseInt(btn.dataset.dir, 10));
+    return;
+  }
+});
+
+document.getElementById('setup').addEventListener('input', function(e) {
+  const el = e.target;
+
+  if (el.id === 'advTitle') {
+    state.adventure.title = el.value;
+    save();
+    renderValidation();
+    return;
+  }
+  if (el.id === 'advSubtitle') {
+    state.adventure.subtitle = el.value;
+    save();
+    return;
+  }
+
+  if (el.dataset.field === 'houseName') {
+    const h = state.houses.find(h => h.id === el.dataset.houseId);
+    if (h) { h.name = el.value; save(); }
+    return;
+  }
+  if (el.dataset.field === 'roomName') {
+    for (const h of state.houses) {
+      const r = h.rooms.find(r => r.id === el.dataset.roomId);
+      if (r) { r.name = el.value; save(); break; }
+    }
+    return;
+  }
+  if (el.dataset.field === 'kidName') {
+    const k = state.kids.find(k => k.id === el.dataset.kidId);
+    if (k) { k.name = el.value; save(); renderValidation(); }
+    return;
+  }
+  if (el.dataset.field === 'kidAge') {
+    const k = state.kids.find(k => k.id === el.dataset.kidId);
+    if (k) { k.age = el.value === '' ? '' : Number(el.value); save(); renderValidation(); }
+    return;
+  }
+  if (el.dataset.field === 'apName') {
+    const a = state.auPairs.find(a => a.id === el.dataset.apId);
+    if (a) { a.name = el.value; save(); renderValidation(); }
+    return;
+  }
+});
+
+document.getElementById('editSetupBtn').addEventListener('click', function() {
+  document.getElementById('play').hidden = true;
+  document.getElementById('setup').classList.add('show');
+  history.replaceState(null, '', '#');
+});
+
+document.getElementById('resetPlacementsBtn').addEventListener('click', function() {
+  resetPlacements();
+});
+
+document.addEventListener('click', function(e) {
+  const pop = document.getElementById('avatarPopover');
+  if (!pop.classList.contains('hidden') && !pop.contains(e.target) && !e.target.closest('[data-avatar-kind]')) {
+    closeAvatarPopover();
+  }
+});
+
+let drag = null;
+
+function slotUnderPointer(x, y) {
+  const el = document.elementFromPoint(x, y);
+  return el ? el.closest('[data-slot-type]') : null;
+}
+
+function trayUnderPointer(x, y) {
+  const el = document.elementFromPoint(x, y);
+  return el ? el.closest('#trayWrap') : null;
+}
+
+function canDropOnSlot(slot) {
+  if (!drag || !slot) return false;
+  const t = slot.dataset.slotType;
+  if (drag.personKind === 'kid') {
+    if (t === 'bed') {
+      const occ = getOccupantsInBedSlot(slot.dataset.houseId, slot.dataset.roomId, Number(slot.dataset.slotIndex))
+        .filter(o => !(o.kind === 'kid' && o.person.id === drag.personId));
+      return occ.length < 2;
+    }
+    if (t === 'crib') {
+      const kid = state.kids.find(k => k.id === drag.personId);
+      if (!kid) return false;
+      const ageNum = Number(kid.age);
+      if (!isNaN(ageNum) && ageNum >= 6) return false;
+      const cur = getKidInCribSlot(slot.dataset.houseId, slot.dataset.roomId, Number(slot.dataset.slotIndex));
+      return !cur || cur.id === drag.personId;
+    }
+    return false;
+  }
+  if (drag.personKind === 'aupair') {
+    if (t !== 'bed') return false;
+    const houseId = slot.dataset.houseId;
+    const cur = getAuPairForHouse(houseId);
+    if (cur && cur.id !== drag.personId) return false;
+    const occ = getOccupantsInBedSlot(houseId, slot.dataset.roomId, Number(slot.dataset.slotIndex))
+      .filter(o => !(o.kind === 'aupair' && o.person.id === drag.personId));
+    return occ.length < 2;
+  }
+  return false;
+}
+
+function applyDrop(slot) {
+  const t = slot.dataset.slotType;
+  const houseId = slot.dataset.houseId;
+  const roomId = slot.dataset.roomId;
+  const idx = Number(slot.dataset.slotIndex);
+  if (drag.personKind === 'kid') {
+    if (t === 'bed') {
+      const others = getOccupantsInBedSlot(houseId, roomId, idx)
+        .filter(o => !(o.kind === 'kid' && o.person.id === drag.personId));
+      const subSlot = others.some(o => o.subSlot === 0) ? 1 : 0;
+      state.placements.kids[drag.personId] = { houseId, roomId, slotType: 'bed', slotIndex: idx, bedSubSlot: subSlot };
+    } else if (t === 'crib') {
+      state.placements.kids[drag.personId] = { houseId, roomId, slotType: 'crib', slotIndex: idx };
+    }
+  } else if (drag.personKind === 'aupair' && t === 'bed') {
+    const others = getOccupantsInBedSlot(houseId, roomId, idx)
+      .filter(o => !(o.kind === 'aupair' && o.person.id === drag.personId));
+    const subSlot = others.some(o => o.subSlot === 0) ? 1 : 0;
+    state.placements.auPairs[drag.personId] = { houseId, roomId, slotType: 'bed', slotIndex: idx, bedSubSlot: subSlot };
+  }
+}
+
+function removeDragPlacement() {
+  if (!drag) return;
+  if (drag.personKind === 'kid') delete state.placements.kids[drag.personId];
+  else if (drag.personKind === 'aupair') delete state.placements.auPairs[drag.personId];
+}
+
+function clearDropHighlights() {
+  document.querySelectorAll('.drop-valid, .drop-invalid').forEach(el =>
+    el.classList.remove('drop-valid', 'drop-invalid'));
+}
+
+function startDrag(chip, e) {
+  const personId = chip.dataset.personId;
+  const personKind = chip.dataset.personKind;
+  if (!personId || !personKind) return;
+
+  const rect = chip.getBoundingClientRect();
+  const offsetX = e.clientX - rect.left;
+  const offsetY = e.clientY - rect.top;
+
+  const ghost = chip.cloneNode(true);
+  ghost.classList.add('drag-ghost');
+  ghost.classList.remove('drag-source');
+  ghost.style.left = rect.left + 'px';
+  ghost.style.top = rect.top + 'px';
+  ghost.style.width = rect.width + 'px';
+  ghost.style.height = rect.height + 'px';
+  document.body.appendChild(ghost);
+
+  chip.classList.add('drag-source');
+  document.body.classList.add('dragging');
+
+  drag = {
+    chip: chip,
+    ghost: ghost,
+    personId: personId,
+    personKind: personKind,
+    offsetX: offsetX,
+    offsetY: offsetY,
+    pointerId: e.pointerId,
+    fromPlacement: chip.classList.contains('placed-chip'),
+    currentSlot: null,
+    currentTray: null
+  };
+
+  try { chip.setPointerCapture(e.pointerId); } catch(_) {}
+  e.preventDefault();
+}
+
+function moveDrag(e) {
+  if (!drag || e.pointerId !== drag.pointerId) return;
+  drag.ghost.style.left = (e.clientX - drag.offsetX) + 'px';
+  drag.ghost.style.top = (e.clientY - drag.offsetY) + 'px';
+
+  const slot = slotUnderPointer(e.clientX, e.clientY);
+  if (slot !== drag.currentSlot) {
+    if (drag.currentSlot) drag.currentSlot.classList.remove('drop-valid', 'drop-invalid');
+    drag.currentSlot = slot;
+    if (slot) slot.classList.add(canDropOnSlot(slot) ? 'drop-valid' : 'drop-invalid');
+  }
+
+  const trayEl = (!slot && drag.fromPlacement) ? trayUnderPointer(e.clientX, e.clientY) : null;
+  if (trayEl !== drag.currentTray) {
+    if (drag.currentTray) drag.currentTray.classList.remove('drop-valid');
+    drag.currentTray = trayEl;
+    if (trayEl) trayEl.classList.add('drop-valid');
+  }
+}
+
+function endDrag(e) {
+  if (!drag || e.pointerId !== drag.pointerId) return;
+
+  const slot = drag.currentSlot;
+  if (slot && canDropOnSlot(slot)) {
+    applyDrop(slot);
+    savePlacements();
+    cleanupDrag();
+    renderPlay();
+    return;
+  }
+
+  if (drag.fromPlacement && trayUnderPointer(e.clientX, e.clientY)) {
+    removeDragPlacement();
+    savePlacements();
+    cleanupDrag();
+    renderPlay();
+    return;
+  }
+
+  cleanupDrag();
+}
+
+function cleanupDrag() {
+  if (!drag) return;
+  if (drag.ghost && drag.ghost.parentNode) drag.ghost.parentNode.removeChild(drag.ghost);
+  drag.chip.classList.remove('drag-source');
+  try { drag.chip.releasePointerCapture(drag.pointerId); } catch(_) {}
+  drag = null;
+  document.body.classList.remove('dragging');
+  clearDropHighlights();
+  const tray = document.getElementById('trayWrap');
+  if (tray) tray.classList.remove('drop-valid');
+}
+
+document.addEventListener('pointerdown', function(e) {
+  if (e.button !== undefined && e.button !== 0) return;
+  if (document.getElementById('play').hidden) return;
+  const chip = e.target.closest('.tray-chip, .placed-chip');
+  if (!chip || !chip.dataset.personId) return;
+  startDrag(chip, e);
+});
+
+document.addEventListener('pointermove', moveDrag);
+document.addEventListener('pointerup', endDrag);
+document.addEventListener('pointercancel', function(e) {
+  if (drag && e.pointerId === drag.pointerId) cleanupDrag();
+});
+
+function init() {
+  load();
+  renderSetup();
+  if (window.location.hash === '#play') {
+    const v = validate();
+    if (v.ok) {
+      showPlay();
+    }
+  }
+}
+
+init();
+</script>
+</body>
+</html>
