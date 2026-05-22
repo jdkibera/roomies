@@ -66,7 +66,7 @@
     border: 1px solid var(--card-border);
     border-radius: 12px;
     padding: 34px 42px;
-    max-width: 780px;
+    max-width: 1170px;
     width: 100%;
     text-align: center;
     box-shadow: 0 12px 40px rgba(30,58,95,0.14);
@@ -276,7 +276,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line-soft);
   }
   .room-row {
     display: flex;
@@ -290,7 +292,7 @@
     display: flex;
     align-items: center;
     gap: 18px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     padding-left: 4px;
   }
   .furniture-pair {
@@ -340,9 +342,11 @@
     box-shadow: 0 8px 32px rgba(30,58,95,0.18);
     z-index: 100;
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(10, 1fr);
     gap: 6px;
     max-width: calc(100vw - 24px);
+    max-height: calc(100vh - 24px);
+    overflow-y: auto;
   }
   .avatar-popover.hidden { display: none; }
   .avatar-opt {
@@ -424,6 +428,7 @@
     flex-shrink: 0;
     background: var(--card-bg);
     border-left: 1px solid var(--card-border);
+    box-shadow: -2px 0 12px rgba(30,58,95,0.07);
     padding: 18px 16px;
     display: flex;
     flex-direction: column;
@@ -700,7 +705,7 @@
   }
   .crib-slot {
     position: relative;
-    width: 170px;
+    width: 185px;
     height: 55px;
     flex-shrink: 0;
     border: 1.5px solid #C5CFDA;
@@ -736,7 +741,7 @@
   .crib-slot .placed-chip {
     position: relative;
     z-index: 1;
-    width: 90px;
+    width: 125px;
     height: 40px;
     box-sizing: border-box;
     flex-shrink: 0;
@@ -1052,174 +1057,214 @@ function paletteForHouse(index) {
 
 const BEDDING_THEMES = [
   { // 1 pink hearts
-    color: '#FDE3EE', tile: 84, items: [
-      { e: '💗', x: 18, y: 24, s: 38, r: -18, o: 0.26 },
-      { e: '💗', x: 60, y: 14, s: 10, r: 12,  o: 0.70 },
-      { e: '💗', x: 32, y: 48, s: 14, r: -6,  o: 0.50 },
-      { e: '💗', x: 70, y: 50, s: 5,  r: 25,  o: 0.78 },
-      { e: '💗', x: 6,  y: 62, s: 22, r: 8,   o: 0.38 },
-      { e: '💗', x: 58, y: 68, s: 6,  r: -22, o: 0.72 },
-      { e: '💗', x: 42, y: 76, s: 9,  r: 15,  o: 0.55 },
+    color: '#FDE3EE', vbW: 220, vbH: 100, items: [
+      { e: '💗', x: 42, y: 50, s: 64, r: -15, o: 0.28 },
+      { e: '💗', x: 132, y: 28, s: 30, r: 12, o: 0.42 },
+      { e: '💗', x: 180, y: 72, s: 22, r: -8, o: 0.50 },
+      { e: '💗', x: 92, y: 82, s: 16, r: 22, o: 0.55 },
+      { e: '💗', x: 200, y: 22, s: 11, r: -20, o: 0.62 },
+      { e: '💗', x: 82, y: 18, s: 9, r: 5, o: 0.68 },
+      { e: '💗', x: 160, y: 48, s: 6, r: 30, o: 0.76 },
+      { e: '💗', x: 112, y: 60, s: 4, r: 0, o: 0.78 },
+      { e: '💗', x: 50, y: 90, s: 7, r: 15, o: 0.72 },
     ],
   },
   { // 2 mint stars
-    color: '#DCEFE0', tile: 84, items: [
-      { e: '⭐', x: 18, y: 26, s: 34, r: -8,  o: 0.28 },
-      { e: '⭐', x: 56, y: 14, s: 7,  r: 22,  o: 0.78 },
-      { e: '⭐', x: 30, y: 50, s: 14, r: -16, o: 0.55 },
-      { e: '⭐', x: 70, y: 56, s: 5,  r: 10,  o: 0.80 },
-      { e: '✨', x: 70, y: 18, s: 26, r: 0,   o: 0.32 },
-      { e: '✨', x: 40, y: 70, s: 6,  r: 0,   o: 0.65 },
-      { e: '⭐', x: 10, y: 72, s: 11, r: 28,  o: 0.50 },
+    color: '#DCEFE0', vbW: 220, vbH: 100, items: [
+      { e: '⭐', x: 44, y: 52, s: 60, r: -10, o: 0.28 },
+      { e: '⭐', x: 138, y: 26, s: 26, r: 22, o: 0.45 },
+      { e: '⭐', x: 178, y: 68, s: 20, r: -16, o: 0.52 },
+      { e: '✨', x: 80, y: 18, s: 18, r: 0, o: 0.50 },
+      { e: '⭐', x: 96, y: 80, s: 14, r: 18, o: 0.55 },
+      { e: '⭐', x: 198, y: 22, s: 10, r: -10, o: 0.65 },
+      { e: '✨', x: 120, y: 60, s: 7, r: 0, o: 0.68 },
+      { e: '✨', x: 158, y: 48, s: 5, r: 0, o: 0.78 },
+      { e: '⭐', x: 50, y: 90, s: 4, r: 30, o: 0.72 },
     ],
   },
   { // 3 lavender dots
-    color: '#E8DBF2', tile: 80, dotColor: 'rgba(123,75,148,0.55)',
-    dots: [
-      { x: 14, y: 16, r: 5.5 },
-      { x: 34, y: 8,  r: 1.2 },
-      { x: 54, y: 20, r: 3.4 },
-      { x: 22, y: 34, r: 1.8 },
-      { x: 44, y: 42, r: 7.5 },
-      { x: 64, y: 34, r: 1.0 },
-      { x: 8,  y: 58, r: 2.8 },
-      { x: 32, y: 62, r: 1.5 },
-      { x: 56, y: 64, r: 4.2 },
-      { x: 72, y: 70, r: 1.3 },
+    color: '#E8DBF2', vbW: 220, vbH: 100, dotColor: 'rgba(123,75,148,0.55)', dots: [
+      { x: 50, y: 50, r: 17 },
+      { x: 130, y: 28, r: 8 },
+      { x: 178, y: 68, r: 7 },
+      { x: 92, y: 80, r: 5 },
+      { x: 200, y: 22, r: 4 },
+      { x: 28, y: 14, r: 3 },
+      { x: 162, y: 18, r: 6 },
+      { x: 118, y: 56, r: 4.5 },
+      { x: 148, y: 88, r: 2.5 },
+      { x: 196, y: 50, r: 2 },
+      { x: 88, y: 36, r: 2.5 },
+      { x: 56, y: 90, r: 3.5 },
     ],
   },
   { // 4 peach rainbows
-    color: '#FDE3D1', tile: 92, items: [
-      { e: '🌈', x: 22, y: 30, s: 38, r: -10, o: 0.30 },
-      { e: '🌈', x: 64, y: 16, s: 8,  r: 14,  o: 0.75 },
-      { e: '🌈', x: 40, y: 58, s: 20, r: 0,   o: 0.55 },
-      { e: '🌈', x: 14, y: 72, s: 6,  r: -8,  o: 0.70 },
-      { e: '🌈', x: 74, y: 70, s: 14, r: 18,  o: 0.45 },
-      { e: '🌈', x: 52, y: 84, s: 5,  r: -5,  o: 0.60 },
+    color: '#FDE3D1', vbW: 220, vbH: 100, items: [
+      { e: '🌈', x: 44, y: 52, s: 60, r: -10, o: 0.30 },
+      { e: '🌈', x: 138, y: 28, s: 26, r: 14, o: 0.45 },
+      { e: '🌈', x: 180, y: 70, s: 22, r: -8, o: 0.50 },
+      { e: '🌈', x: 84, y: 18, s: 16, r: 8, o: 0.50 },
+      { e: '🌈', x: 96, y: 82, s: 14, r: 18, o: 0.55 },
+      { e: '🌈', x: 200, y: 22, s: 10, r: -12, o: 0.62 },
+      { e: '🌈', x: 158, y: 50, s: 7, r: 0, o: 0.70 },
+      { e: '🌈', x: 118, y: 60, s: 5, r: -5, o: 0.78 },
+      { e: '🌈', x: 50, y: 90, s: 4, r: 15, o: 0.72 },
     ],
   },
   { // 5 sky clouds
-    color: '#DDEAF5', tile: 92, items: [
-      { e: '☁️', x: 22, y: 28, s: 40, r: 0, o: 0.30 },
-      { e: '☁️', x: 66, y: 14, s: 8,  r: 0, o: 0.75 },
-      { e: '☁️', x: 32, y: 56, s: 22, r: 0, o: 0.45 },
-      { e: '☁️', x: 72, y: 56, s: 6,  r: 0, o: 0.65 },
-      { e: '☁️', x: 12, y: 76, s: 14, r: 0, o: 0.55 },
-      { e: '☁️', x: 60, y: 82, s: 5,  r: 0, o: 0.78 },
+    color: '#DDEAF5', vbW: 220, vbH: 100, items: [
+      { e: '☁️', x: 44, y: 52, s: 62, r: 0, o: 0.28 },
+      { e: '☁️', x: 140, y: 28, s: 28, r: 0, o: 0.45 },
+      { e: '☁️', x: 180, y: 72, s: 22, r: 0, o: 0.52 },
+      { e: '☁️', x: 84, y: 18, s: 16, r: 0, o: 0.50 },
+      { e: '☁️', x: 96, y: 82, s: 14, r: 0, o: 0.55 },
+      { e: '☁️', x: 198, y: 22, s: 9, r: 0, o: 0.62 },
+      { e: '☁️', x: 158, y: 50, s: 7, r: 0, o: 0.72 },
+      { e: '☁️', x: 118, y: 60, s: 5, r: 0, o: 0.78 },
+      { e: '☁️', x: 50, y: 90, s: 4, r: 0, o: 0.70 },
     ],
   },
   { // 6 lemon unicorns
-    color: '#FBEEC2', tile: 92, items: [
-      { e: '🦄', x: 22, y: 30, s: 38, r: -14, o: 0.28 },
-      { e: '🦄', x: 66, y: 18, s: 7,  r: 10,  o: 0.78 },
-      { e: '🦄', x: 38, y: 58, s: 18, r: 0,   o: 0.50 },
-      { e: '🦄', x: 14, y: 72, s: 6,  r: 8,   o: 0.70 },
-      { e: '🦄', x: 72, y: 74, s: 14, r: -10, o: 0.45 },
-      { e: '✨', x: 50, y: 38, s: 12, r: 0,   o: 0.55 },
-      { e: '✨', x: 78, y: 44, s: 4,  r: 0,   o: 0.80 },
+    color: '#FBEEC2', vbW: 220, vbH: 100, items: [
+      { e: '🦄', x: 44, y: 52, s: 58, r: -12, o: 0.28 },
+      { e: '🦄', x: 138, y: 28, s: 26, r: 10, o: 0.45 },
+      { e: '🦄', x: 180, y: 70, s: 22, r: -8, o: 0.50 },
+      { e: '🦄', x: 84, y: 18, s: 14, r: 16, o: 0.50 },
+      { e: '🦄', x: 96, y: 82, s: 12, r: 18, o: 0.55 },
+      { e: '🦄', x: 198, y: 22, s: 9, r: -10, o: 0.62 },
+      { e: '✨', x: 158, y: 50, s: 12, r: 0, o: 0.55 },
+      { e: '✨', x: 118, y: 62, s: 5, r: 0, o: 0.80 },
+      { e: '✨', x: 50, y: 90, s: 4, r: 0, o: 0.72 },
     ],
   },
   { // 7 lilac butterflies
-    color: '#EEDFF7', tile: 88, items: [
-      { e: '🦋', x: 20, y: 28, s: 36, r: -14, o: 0.30 },
-      { e: '🦋', x: 62, y: 14, s: 9,  r: 20,  o: 0.70 },
-      { e: '🦋', x: 36, y: 56, s: 16, r: -5,  o: 0.50 },
-      { e: '🦋', x: 74, y: 60, s: 6,  r: 25,  o: 0.75 },
-      { e: '🦋', x: 10, y: 72, s: 13, r: 8,   o: 0.45 },
-      { e: '🦋', x: 50, y: 80, s: 5,  r: -10, o: 0.65 },
+    color: '#EEDFF7', vbW: 220, vbH: 100, items: [
+      { e: '🦋', x: 44, y: 52, s: 60, r: -14, o: 0.30 },
+      { e: '🦋', x: 138, y: 28, s: 26, r: 20, o: 0.45 },
+      { e: '🦋', x: 180, y: 72, s: 22, r: -10, o: 0.50 },
+      { e: '🦋', x: 82, y: 16, s: 16, r: 8, o: 0.50 },
+      { e: '🦋', x: 96, y: 82, s: 14, r: 22, o: 0.55 },
+      { e: '🦋', x: 198, y: 22, s: 9, r: -12, o: 0.62 },
+      { e: '🦋', x: 158, y: 50, s: 7, r: 25, o: 0.72 },
+      { e: '🦋', x: 118, y: 60, s: 5, r: -15, o: 0.78 },
+      { e: '🦋', x: 50, y: 90, s: 4, r: 20, o: 0.72 },
     ],
   },
   { // 8 sage leaves
-    color: '#DCEAD7', tile: 86, items: [
-      { e: '🍃', x: 18, y: 24, s: 34, r: -25, o: 0.28 },
-      { e: '🍃', x: 60, y: 18, s: 8,  r: 35,  o: 0.70 },
-      { e: '🍃', x: 36, y: 54, s: 16, r: -10, o: 0.50 },
-      { e: '🍃', x: 72, y: 60, s: 5,  r: 20,  o: 0.78 },
-      { e: '🍃', x: 10, y: 70, s: 13, r: 45,  o: 0.45 },
-      { e: '🌿', x: 50, y: 76, s: 24, r: 0,   o: 0.32 },
-      { e: '🌿', x: 78, y: 32, s: 5,  r: 60,  o: 0.65 },
+    color: '#DCEAD7', vbW: 220, vbH: 100, items: [
+      { e: '🍃', x: 42, y: 52, s: 56, r: -25, o: 0.30 },
+      { e: '🌿', x: 138, y: 28, s: 28, r: 0, o: 0.40 },
+      { e: '🍃', x: 178, y: 70, s: 22, r: -15, o: 0.50 },
+      { e: '🍃', x: 80, y: 18, s: 18, r: 35, o: 0.50 },
+      { e: '🍃', x: 96, y: 82, s: 14, r: 50, o: 0.55 },
+      { e: '🌿', x: 200, y: 22, s: 10, r: 0, o: 0.65 },
+      { e: '🍃', x: 158, y: 50, s: 7, r: 60, o: 0.70 },
+      { e: '🌿', x: 118, y: 62, s: 5, r: 0, o: 0.75 },
+      { e: '🍃', x: 50, y: 90, s: 4, r: 15, o: 0.72 },
     ],
   },
   { // 9 aqua waves
-    color: '#D6EBED', tile: 88, items: [
-      { e: '🌊', x: 18, y: 30, s: 38, r: 0,  o: 0.30 },
-      { e: '🌊', x: 62, y: 16, s: 9,  r: 0,  o: 0.70 },
-      { e: '🌊', x: 36, y: 58, s: 20, r: 0,  o: 0.45 },
-      { e: '🌊', x: 74, y: 60, s: 5,  r: 0,  o: 0.78 },
-      { e: '🌊', x: 12, y: 74, s: 14, r: 0,  o: 0.50 },
-      { e: '🌊', x: 54, y: 82, s: 6,  r: 0,  o: 0.60 },
+    color: '#D6EBED', vbW: 220, vbH: 100, items: [
+      { e: '🌊', x: 44, y: 52, s: 60, r: 0, o: 0.28 },
+      { e: '🌊', x: 138, y: 28, s: 26, r: 0, o: 0.45 },
+      { e: '🌊', x: 178, y: 70, s: 22, r: 0, o: 0.50 },
+      { e: '🌊', x: 82, y: 16, s: 16, r: 0, o: 0.50 },
+      { e: '🌊', x: 96, y: 82, s: 14, r: 0, o: 0.55 },
+      { e: '🌊', x: 198, y: 22, s: 10, r: 0, o: 0.62 },
+      { e: '🌊', x: 158, y: 50, s: 7, r: 0, o: 0.72 },
+      { e: '🌊', x: 116, y: 60, s: 5, r: 0, o: 0.78 },
+      { e: '🌊', x: 50, y: 90, s: 4, r: 0, o: 0.70 },
     ],
   },
   { // 10 mint spirals
-    color: '#D9ECE7', tile: 88, items: [
-      { e: '🌀', x: 20, y: 30, s: 36, r: 0,  o: 0.30 },
-      { e: '🌀', x: 62, y: 14, s: 7,  r: 0,  o: 0.72 },
-      { e: '🌀', x: 38, y: 58, s: 16, r: 0,  o: 0.50 },
-      { e: '🌀', x: 74, y: 58, s: 5,  r: 0,  o: 0.75 },
-      { e: '🌀', x: 12, y: 72, s: 12, r: 0,  o: 0.45 },
-      { e: '🌀', x: 56, y: 80, s: 4,  r: 0,  o: 0.68 },
+    color: '#D9ECE7', vbW: 220, vbH: 100, items: [
+      { e: '🌀', x: 42, y: 52, s: 60, r: 0, o: 0.28 },
+      { e: '🌀', x: 138, y: 28, s: 26, r: 0, o: 0.45 },
+      { e: '🌀', x: 178, y: 70, s: 22, r: 0, o: 0.50 },
+      { e: '🌀', x: 82, y: 16, s: 16, r: 0, o: 0.50 },
+      { e: '🌀', x: 96, y: 82, s: 14, r: 0, o: 0.55 },
+      { e: '🌀', x: 198, y: 22, s: 9, r: 0, o: 0.62 },
+      { e: '🌀', x: 158, y: 50, s: 7, r: 0, o: 0.72 },
+      { e: '🌀', x: 116, y: 60, s: 5, r: 0, o: 0.78 },
+      { e: '🌀', x: 50, y: 90, s: 4, r: 0, o: 0.68 },
     ],
   },
   { // 11 cream cherries
-    color: '#FBE4D8', tile: 86, items: [
-      { e: '🍒', x: 18, y: 28, s: 32, r: -10, o: 0.30 },
-      { e: '🍒', x: 60, y: 14, s: 7,  r: 12,  o: 0.75 },
-      { e: '🍒', x: 38, y: 52, s: 16, r: -5,  o: 0.50 },
-      { e: '🍒', x: 74, y: 58, s: 5,  r: 18,  o: 0.78 },
-      { e: '🍒', x: 12, y: 72, s: 13, r: 0,   o: 0.45 },
-      { e: '🍒', x: 56, y: 80, s: 4,  r: 8,   o: 0.68 },
+    color: '#FBE4D8', vbW: 220, vbH: 100, items: [
+      { e: '🍒', x: 42, y: 52, s: 56, r: -12, o: 0.30 },
+      { e: '🍒', x: 138, y: 28, s: 24, r: 12, o: 0.45 },
+      { e: '🍒', x: 178, y: 70, s: 20, r: -8, o: 0.50 },
+      { e: '🍒', x: 82, y: 18, s: 14, r: 0, o: 0.50 },
+      { e: '🍒', x: 96, y: 82, s: 14, r: 16, o: 0.55 },
+      { e: '🍒', x: 198, y: 24, s: 9, r: -10, o: 0.62 },
+      { e: '🍒', x: 158, y: 50, s: 6, r: 18, o: 0.75 },
+      { e: '🍒', x: 116, y: 60, s: 5, r: -5, o: 0.78 },
+      { e: '🍒', x: 50, y: 92, s: 4, r: 8, o: 0.70 },
     ],
   },
   { // 12 twilight moons
-    color: '#DDD8EE', tile: 88, items: [
-      { e: '🌙', x: 22, y: 30, s: 38, r: 0,   o: 0.30 },
-      { e: '🌙', x: 64, y: 16, s: 9,  r: 25,  o: 0.70 },
-      { e: '🌙', x: 38, y: 58, s: 16, r: -15, o: 0.50 },
-      { e: '🌙', x: 74, y: 60, s: 5,  r: 10,  o: 0.78 },
-      { e: '✨', x: 50, y: 38, s: 12, r: 0,   o: 0.55 },
-      { e: '✨', x: 80, y: 42, s: 4,  r: 0,   o: 0.80 },
-      { e: '✨', x: 24, y: 72, s: 9,  r: 0,   o: 0.45 },
-      { e: '✨', x: 62, y: 80, s: 5,  r: 0,   o: 0.65 },
+    color: '#DDD8EE', vbW: 220, vbH: 100, items: [
+      { e: '🌙', x: 44, y: 52, s: 60, r: 0, o: 0.30 },
+      { e: '🌙', x: 140, y: 28, s: 26, r: 25, o: 0.45 },
+      { e: '🌙', x: 180, y: 72, s: 22, r: -20, o: 0.50 },
+      { e: '✨', x: 80, y: 18, s: 16, r: 0, o: 0.55 },
+      { e: '🌙', x: 96, y: 82, s: 14, r: 10, o: 0.55 },
+      { e: '✨', x: 200, y: 22, s: 9, r: 0, o: 0.70 },
+      { e: '✨', x: 158, y: 50, s: 7, r: 0, o: 0.78 },
+      { e: '✨', x: 118, y: 60, s: 4, r: 0, o: 0.80 },
+      { e: '🌙', x: 50, y: 92, s: 5, r: 30, o: 0.70 },
     ],
   },
   { // 13 rose flowers
-    color: '#FBE0EA', tile: 88, items: [
-      { e: '🌸', x: 18, y: 30, s: 36, r: -8,  o: 0.30 },
-      { e: '🌸', x: 62, y: 14, s: 8,  r: 15,  o: 0.72 },
-      { e: '🌸', x: 38, y: 56, s: 18, r: 0,   o: 0.50 },
-      { e: '🌸', x: 74, y: 58, s: 5,  r: -10, o: 0.78 },
-      { e: '🌸', x: 10, y: 72, s: 14, r: 8,   o: 0.45 },
-      { e: '🌸', x: 54, y: 80, s: 4,  r: -5,  o: 0.65 },
+    color: '#FBE0EA', vbW: 220, vbH: 100, items: [
+      { e: '🌸', x: 44, y: 52, s: 60, r: -8, o: 0.30 },
+      { e: '🌸', x: 138, y: 28, s: 26, r: 15, o: 0.45 },
+      { e: '🌸', x: 180, y: 72, s: 22, r: -10, o: 0.50 },
+      { e: '🌸', x: 82, y: 18, s: 16, r: 8, o: 0.50 },
+      { e: '🌸', x: 96, y: 82, s: 14, r: 18, o: 0.55 },
+      { e: '🌸', x: 200, y: 24, s: 9, r: -5, o: 0.62 },
+      { e: '🌸', x: 158, y: 50, s: 7, r: 22, o: 0.72 },
+      { e: '🌸', x: 118, y: 60, s: 5, r: -8, o: 0.78 },
+      { e: '🌸', x: 50, y: 92, s: 4, r: 12, o: 0.70 },
     ],
   },
   { // 14 icy snowflakes
-    color: '#DDE9F0', tile: 86, items: [
-      { e: '❄️', x: 18, y: 26, s: 34, r: 0,  o: 0.30 },
-      { e: '❄️', x: 60, y: 14, s: 7,  r: 0,  o: 0.75 },
-      { e: '❄️', x: 36, y: 54, s: 16, r: 0,  o: 0.50 },
-      { e: '❄️', x: 72, y: 60, s: 5,  r: 0,  o: 0.78 },
-      { e: '❄️', x: 10, y: 70, s: 13, r: 0,  o: 0.45 },
-      { e: '❄️', x: 52, y: 80, s: 4,  r: 0,  o: 0.68 },
+    color: '#DDE9F0', vbW: 220, vbH: 100, items: [
+      { e: '❄️', x: 42, y: 52, s: 56, r: 0, o: 0.30 },
+      { e: '❄️', x: 138, y: 28, s: 24, r: 0, o: 0.45 },
+      { e: '❄️', x: 178, y: 70, s: 20, r: 0, o: 0.50 },
+      { e: '❄️', x: 82, y: 18, s: 14, r: 0, o: 0.50 },
+      { e: '❄️', x: 96, y: 82, s: 14, r: 0, o: 0.55 },
+      { e: '❄️', x: 198, y: 22, s: 9, r: 0, o: 0.62 },
+      { e: '❄️', x: 158, y: 50, s: 7, r: 0, o: 0.72 },
+      { e: '❄️', x: 116, y: 60, s: 5, r: 0, o: 0.78 },
+      { e: '❄️', x: 50, y: 92, s: 4, r: 0, o: 0.68 },
     ],
   },
   { // 15 peach bows
-    color: '#FCE3D2', tile: 88, items: [
-      { e: '🎀', x: 18, y: 28, s: 34, r: -12, o: 0.30 },
-      { e: '🎀', x: 60, y: 14, s: 7,  r: 10,  o: 0.72 },
-      { e: '🎀', x: 38, y: 54, s: 16, r: 0,   o: 0.50 },
-      { e: '🎀', x: 74, y: 58, s: 5,  r: 18,  o: 0.78 },
-      { e: '🎀', x: 12, y: 72, s: 14, r: -8,  o: 0.45 },
-      { e: '🎀', x: 56, y: 80, s: 4,  r: 5,   o: 0.68 },
+    color: '#FCE3D2', vbW: 220, vbH: 100, items: [
+      { e: '🎀', x: 42, y: 52, s: 58, r: -12, o: 0.30 },
+      { e: '🎀', x: 138, y: 28, s: 24, r: 10, o: 0.45 },
+      { e: '🎀', x: 178, y: 70, s: 22, r: -8, o: 0.50 },
+      { e: '🎀', x: 82, y: 18, s: 16, r: 8, o: 0.50 },
+      { e: '🎀', x: 96, y: 82, s: 14, r: 18, o: 0.55 },
+      { e: '🎀', x: 198, y: 22, s: 9, r: -10, o: 0.62 },
+      { e: '🎀', x: 158, y: 50, s: 7, r: 20, o: 0.75 },
+      { e: '🎀', x: 116, y: 60, s: 5, r: -8, o: 0.78 },
+      { e: '🎀', x: 50, y: 92, s: 4, r: 12, o: 0.68 },
     ],
   },
   { // 16 lemon suns
-    color: '#FBEAB8', tile: 90, items: [
-      { e: '☀️', x: 22, y: 30, s: 38, r: 0,  o: 0.30 },
-      { e: '☀️', x: 62, y: 16, s: 9,  r: 0,  o: 0.72 },
-      { e: '☀️', x: 38, y: 58, s: 18, r: 0,  o: 0.50 },
-      { e: '☀️', x: 74, y: 60, s: 5,  r: 0,  o: 0.78 },
-      { e: '☀️', x: 12, y: 74, s: 13, r: 0,  o: 0.45 },
-      { e: '☀️', x: 54, y: 82, s: 4,  r: 0,  o: 0.68 },
+    color: '#FBEAB8', vbW: 220, vbH: 100, items: [
+      { e: '☀️', x: 44, y: 52, s: 60, r: 0, o: 0.28 },
+      { e: '☀️', x: 140, y: 28, s: 26, r: 0, o: 0.45 },
+      { e: '☀️', x: 180, y: 72, s: 22, r: 0, o: 0.50 },
+      { e: '☀️', x: 82, y: 18, s: 16, r: 0, o: 0.50 },
+      { e: '☀️', x: 96, y: 82, s: 14, r: 0, o: 0.55 },
+      { e: '☀️', x: 200, y: 24, s: 10, r: 0, o: 0.62 },
+      { e: '☀️', x: 158, y: 50, s: 7, r: 0, o: 0.72 },
+      { e: '☀️', x: 116, y: 60, s: 4, r: 0, o: 0.80 },
+      { e: '☀️', x: 50, y: 92, s: 5, r: 0, o: 0.70 },
     ],
   },
 ];
@@ -1231,6 +1276,8 @@ const CRIB_MATTRESS_COLORS = [
 ];
 
 function buildBeddingSvg(theme) {
+  const w = theme.vbW || 220;
+  const h = theme.vbH || 100;
   let inner = '';
   if (theme.dots) {
     inner += theme.dots.map(d =>
@@ -1240,17 +1287,21 @@ function buildBeddingSvg(theme) {
   if (theme.items) {
     inner += theme.items.map(it =>
       "<text x='" + it.x + "' y='" + it.y + "' font-size='" + it.s +
-      "' transform='rotate(" + it.r + " " + it.x + " " + it.y + ")' opacity='" + it.o + "'>" + it.e + "</text>"
+      "' text-anchor='middle' dominant-baseline='central'" +
+      " transform='rotate(" + it.r + " " + it.x + " " + it.y + ")'" +
+      " opacity='" + it.o + "'>" + it.e + "</text>"
     ).join('');
   }
-  return "<svg xmlns='http://www.w3.org/2000/svg' width='" + theme.tile + "' height='" + theme.tile + "'>" + inner + "</svg>";
+  return "<svg xmlns='http://www.w3.org/2000/svg'" +
+    " viewBox='0 0 " + w + " " + h + "'" +
+    " preserveAspectRatio='none'>" + inner + "</svg>";
 }
 
 function applyBedding(blanket, theme) {
   blanket.style.backgroundColor = theme.color;
   blanket.style.backgroundImage = "url(\"data:image/svg+xml;utf8," + encodeURIComponent(buildBeddingSvg(theme)) + "\")";
-  blanket.style.backgroundSize = theme.tile + 'px ' + theme.tile + 'px';
-  blanket.style.backgroundRepeat = 'repeat';
+  blanket.style.backgroundSize = '100% 100%';
+  blanket.style.backgroundRepeat = 'no-repeat';
 }
 
 let state = {};
@@ -1517,16 +1568,27 @@ function openAvatarPopover(btn, personId, kind) {
   });
 
   const rect = btn.getBoundingClientRect();
+  pop.style.left = '0px';
+  pop.style.top = '0px';
   pop.classList.remove('hidden');
 
-  const popW = 240;
+  const popW = pop.offsetWidth;
+  const popH = pop.offsetHeight;
+  const margin = 12;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+
   let left = rect.left;
-  if (left + popW > window.innerWidth - 12) left = window.innerWidth - popW - 12;
-  if (left < 12) left = 12;
+  if (left + popW > vw - margin) left = vw - popW - margin;
+  if (left < margin) left = margin;
 
   let top = rect.bottom + 6;
-  const popH = 160;
-  if (top + popH > window.innerHeight - 12) top = rect.top - popH - 6;
+  if (top + popH > vh - margin) {
+    const above = rect.top - popH - 6;
+    if (above >= margin) top = above;
+    else top = Math.max(margin, vh - popH - margin);
+  }
+  if (top < margin) top = margin;
 
   pop.style.left = left + 'px';
   pop.style.top = top + 'px';
