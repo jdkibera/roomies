@@ -990,18 +990,26 @@
   .save-title {
     font-family: var(--font-heading);
     font-weight: 500;
-    font-size: 2rem;
+    font-size: 2.4rem;
     color: var(--navy);
     text-align: center;
-    background: transparent;
-    border: none;
-    border-bottom: 1px solid var(--line-soft);
+    background: var(--cream);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
     width: 100%;
-    padding: 8px 4px 12px 4px;
+    padding: 14px 16px;
     margin-bottom: 22px;
     outline: none;
+    box-shadow: inset 0 1px 2px rgba(30,58,95,0.04);
+    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+    cursor: text;
   }
-  .save-title:focus { border-bottom-color: var(--copper); }
+  .save-title:hover { border-color: var(--copper-light); }
+  .save-title:focus {
+    border-color: var(--copper);
+    background: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(194,123,92,0.14);
+  }
   .save-body {
     font-family: var(--font-body);
     color: var(--text-dark);
@@ -1105,25 +1113,42 @@
   #setup, #saveModal { z-index: 40; }
 
   @media print {
-    .beach-bg { display: none !important; }
-    body * { visibility: hidden !important; }
-    .save-overlay, .save-overlay * { visibility: visible !important; }
-    .save-overlay {
-      position: absolute !important;
-      inset: 0 !important;
+    html, body {
+      margin: 0 !important;
+      padding: 0 !important;
       background: #fff !important;
+      height: auto !important;
+      overflow: visible !important;
+    }
+    body > *:not(.save-overlay) { display: none !important; }
+    .save-overlay {
+      position: static !important;
+      inset: auto !important;
       display: block !important;
       padding: 0 !important;
+      margin: 0 !important;
+      background: #fff !important;
+      height: auto !important;
+      max-height: none !important;
+      overflow: visible !important;
     }
     .save-overlay .save-card {
       box-shadow: none !important;
       border: none !important;
+      background: #fff !important;
       max-width: 100% !important;
-      padding: 24px !important;
+      padding: 0 !important;
       margin: 0 !important;
     }
     .save-actions { display: none !important; }
-    .save-title { border-bottom: 1px solid #888 !important; }
+    .save-title {
+      background: transparent !important;
+      border: none !important;
+      padding: 0 0 6px 0 !important;
+      margin: 0 0 14px 0 !important;
+      color: #1E3A5F !important;
+    }
+    .save-adventure { margin: 0 0 14px 0 !important; }
     @page { size: landscape; margin: 14mm; }
   }
 </style>
@@ -2968,6 +2993,17 @@ function init() {
       showPlay();
     }
   }
+  const musicBtn = document.getElementById('musicBtn');
+  musicBtn.classList.add('playing');
+  function unlockMusic() {
+    document.removeEventListener('pointerdown', unlockMusic, true);
+    document.removeEventListener('keydown', unlockMusic, true);
+    if (musicBtn.classList.contains('playing') && !musicPlaying) {
+      startMusic();
+    }
+  }
+  document.addEventListener('pointerdown', unlockMusic, true);
+  document.addEventListener('keydown', unlockMusic, true);
 }
 
 init();
