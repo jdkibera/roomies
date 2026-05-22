@@ -449,6 +449,12 @@
     flex-direction: column;
     gap: 12px;
   }
+  .rail-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
   .rail-title {
     font-family: var(--font-display);
     font-weight: 500;
@@ -458,6 +464,33 @@
     margin: 0;
     text-align: center;
     text-transform: uppercase;
+  }
+  .music-toggle {
+    background: transparent;
+    border: 1px solid var(--card-border);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    font-size: 18px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    filter: grayscale(1);
+    opacity: 0.4;
+    transition: filter 0.2s, opacity 0.2s, border-color 0.2s, background 0.2s;
+  }
+  .music-toggle:hover {
+    opacity: 0.7;
+    border-color: var(--copper-light);
+  }
+  .music-toggle.playing {
+    filter: grayscale(0);
+    opacity: 1;
+    border-color: var(--copper);
+    background: var(--copper-pale);
   }
   .rail-divider {
     height: 1px;
@@ -494,30 +527,32 @@
     padding-top: 8px;
   }
   .rail-controls {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 14px;
   }
-  .rail-controls button {
+  .icon-btn {
     background: var(--cream);
     border: 1px solid var(--card-border);
     color: var(--navy);
-    border-radius: 7px;
-    padding: 10px 6px;
-    font-family: var(--font-heading);
-    font-size: 0.92rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    font-weight: 600;
+    border-radius: 10px;
+    width: 52px;
+    height: 52px;
+    padding: 0;
+    font-size: 24px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
   }
-  .rail-controls button:hover { border-color: var(--copper-light); color: var(--copper); }
-  .rail-controls button.playing {
+  .icon-btn:hover {
+    border-color: var(--copper-light);
     background: var(--copper-pale);
-    border-color: var(--copper);
-    color: var(--copper-dark);
   }
+  .icon-btn:active { transform: translateY(1px); }
 
   .houses-grid {
     flex: 1;
@@ -1185,7 +1220,10 @@
   <div class="play-content">
     <section class="houses-grid" id="housesGrid"></section>
     <aside class="right-rail">
-      <h2 class="rail-title">ROOMIES</h2>
+      <div class="rail-header">
+        <h2 class="rail-title">ROOMIES</h2>
+        <button class="music-toggle" id="musicBtn" aria-label="Toggle music" title="Music">🔊</button>
+      </div>
       <div class="rail-divider"></div>
       <div class="rail-chips" id="trayWrap">
         <div id="trayChips"></div>
@@ -1193,10 +1231,9 @@
       </div>
       <div class="rail-divider"></div>
       <div class="rail-controls">
-        <button id="resetPlacementsBtn">RESET</button>
-        <button id="editSetupBtn">HOME</button>
-        <button id="saveBtn">SAVE</button>
-        <button id="musicBtn">MUSIC</button>
+        <button class="icon-btn" id="resetPlacementsBtn" aria-label="Reset placements" title="Reset placements">🔄</button>
+        <button class="icon-btn" id="editSetupBtn" aria-label="Back to setup" title="Back to setup">🏠</button>
+        <button class="icon-btn" id="saveBtn" aria-label="Print summary" title="Print summary">🖨️</button>
       </div>
     </aside>
   </div>
@@ -2550,46 +2587,29 @@ function renderSaveModal() {
       rn.textContent = room.name;
       r.appendChild(rn);
 
-      let anyOccupant = false;
+      const parts = [];
       for (let bi = 0; bi < room.beds; bi++) {
         const occs = getOccupantsInBedSlot(house.id, room.id, bi);
-        const line = document.createElement('div');
-        line.className = 'save-room-line';
-        line.innerHTML = '<span class="marker">🛏</span>';
-        if (occs.length === 0) {
-          const e = document.createElement('span');
-          e.className = 'empty';
-          e.textContent = 'empty';
-          line.appendChild(e);
-        } else {
-          anyOccupant = true;
-          const names = occs.map(o => o.kind === 'kid' ? formatKid(o.person) : formatAuPair(o.person));
-          line.appendChild(document.createTextNode(names.join(' & ')));
-        }
-        r.appendChild(line);
+        if (occs.length === 0) continue;
+        const names = occs.map(o => o.kind === 'kid' ? formatKid(o.person) : formatAuPair(o.person));
+        parts.push('<span class="marker">🛏</span>' + names.join(' & '));
       }
       for (let ci = 0; ci < room.cribs; ci++) {
         const occ = getKidInCribSlot(house.id, room.id, ci);
-        const line = document.createElement('div');
-        line.className = 'save-room-line';
-        line.innerHTML = '<span class="marker">🍼</span>';
-        if (!occ) {
-          const e = document.createElement('span');
-          e.className = 'empty';
-          e.textContent = 'empty';
-          line.appendChild(e);
-        } else {
-          anyOccupant = true;
-          line.appendChild(document.createTextNode(formatKid(occ)));
-        }
-        r.appendChild(line);
+        if (!occ) continue;
+        parts.push('<span class="marker">🍼</span>' + formatKid(occ));
       }
-      if (!anyOccupant && room.beds === 0 && room.cribs === 0) {
-        const e = document.createElement('div');
-        e.className = 'save-room-line';
-        e.innerHTML = '<span class="empty">no furniture</span>';
-        r.appendChild(e);
+
+      const line = document.createElement('div');
+      line.className = 'save-room-line';
+      if (parts.length > 0) {
+        line.innerHTML = parts.join('  ');
+      } else if (room.beds === 0 && room.cribs === 0) {
+        line.innerHTML = '<span class="empty">no furniture</span>';
+      } else {
+        line.innerHTML = '<span class="empty">empty</span>';
       }
+      r.appendChild(line);
       rooms.appendChild(r);
     }
     block.appendChild(rooms);
@@ -2715,11 +2735,9 @@ function stopMusic() {
 document.getElementById('musicBtn').addEventListener('click', function() {
   if (musicPlaying) {
     stopMusic();
-    this.textContent = 'MUSIC';
     this.classList.remove('playing');
   } else {
     startMusic();
-    this.textContent = 'QUIET';
     this.classList.add('playing');
   }
 });
