@@ -527,20 +527,19 @@
     padding-top: 8px;
   }
   .rail-controls {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 14px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
   }
   .icon-btn {
     background: var(--cream);
     border: 1px solid var(--card-border);
     color: var(--navy);
     border-radius: 10px;
-    width: 52px;
-    height: 52px;
+    width: 100%;
+    height: 48px;
     padding: 0;
-    font-size: 24px;
+    font-size: 22px;
     line-height: 1;
     display: flex;
     align-items: center;
@@ -1093,6 +1092,110 @@
     gap: 12px;
   }
 
+  .save-config-card {
+    max-width: 620px;
+    text-align: left;
+    padding: 32px 40px;
+  }
+  .save-config-heading {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 1.8rem;
+    color: var(--navy);
+    text-align: center;
+    margin: 0 0 22px 0;
+  }
+  .save-config-subheading {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 1.15rem;
+    color: var(--navy);
+    margin: 26px 0 12px 0;
+    letter-spacing: 0.04em;
+  }
+  .save-config-form {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 10px 12px;
+    align-items: center;
+  }
+  .save-config-form label {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-style: italic;
+    color: var(--text-light);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-align: right;
+  }
+  .save-config-submit {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    margin-top: 6px;
+  }
+  .save-config-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+  .save-config-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 14px;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    background: var(--cream);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .save-config-item:hover { border-color: var(--copper-light); }
+  .save-config-item-title {
+    flex: 1;
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 1.05rem;
+    color: var(--navy);
+    cursor: pointer;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .save-config-item-title:hover { color: var(--copper); }
+  .save-config-item-by {
+    font-family: var(--font-body);
+    font-style: italic;
+    color: var(--text-med);
+    font-size: 0.88rem;
+    flex-shrink: 0;
+  }
+  .save-config-item-delete {
+    background: transparent;
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    color: var(--text-med);
+    font-family: var(--font-body);
+    flex-shrink: 0;
+  }
+  .save-config-item-delete:hover { color: #B05040; border-color: #B05040; }
+  .save-config-empty {
+    font-family: var(--font-body);
+    font-style: italic;
+    color: var(--text-light);
+    text-align: center;
+    padding: 18px 0;
+  }
+  .save-config-actions {
+    margin-top: 22px;
+    text-align: center;
+  }
+
   .beach-bg {
     position: fixed;
     inset: 0;
@@ -1266,6 +1369,7 @@
       <div class="rail-controls">
         <button class="icon-btn" id="resetPlacementsBtn" aria-label="Reset placements" title="Reset placements">🔄</button>
         <button class="icon-btn" id="editSetupBtn" aria-label="Back to setup" title="Back to setup">🏠</button>
+        <button class="icon-btn" id="saveBunkupBtn" aria-label="Save this bunk-up" title="Save this bunk-up">💾</button>
         <button class="icon-btn" id="saveBtn" aria-label="Print summary" title="Print summary">🖨️</button>
       </div>
     </aside>
@@ -1281,6 +1385,26 @@
     <div class="save-actions">
       <button class="primary" id="savePrintBtn">Print</button>
       <button class="secondary-link" id="saveCloseBtn">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay save-config-overlay" id="saveConfigModal">
+  <div class="card save-config-card">
+    <h2 class="save-config-heading">Save This Bunk-Up</h2>
+    <div class="save-config-form">
+      <label for="saveCfgName">Your name</label>
+      <input type="text" id="saveCfgName" placeholder="Jonathan" maxlength="40" autocomplete="off" />
+      <label for="saveCfgTitle">Title</label>
+      <input type="text" id="saveCfgTitle" maxlength="80" autocomplete="off" />
+      <div class="save-config-submit">
+        <button class="primary" id="saveCfgSubmit">Save</button>
+      </div>
+    </div>
+    <h3 class="save-config-subheading">Saved bunk-ups</h3>
+    <div class="save-config-list" id="saveCfgList"></div>
+    <div class="save-config-actions">
+      <button class="secondary-link" id="saveCfgClose">Close</button>
     </div>
   </div>
 </div>
@@ -2666,6 +2790,138 @@ document.getElementById('savePrintBtn').addEventListener('click', function() {
 document.getElementById('saveModal').addEventListener('click', function(e) {
   if (e.target === this) this.classList.remove('show');
 });
+
+const LS_SAVED_CONFIGS_KEY = 'rm_saved_configs_v1';
+const LS_USER_NAME_KEY = 'rm_user_name';
+
+function getSavedConfigs() {
+  try {
+    const raw = localStorage.getItem(LS_SAVED_CONFIGS_KEY);
+    const list = raw ? JSON.parse(raw) : [];
+    return Array.isArray(list) ? list : [];
+  } catch(e) { return []; }
+}
+function setSavedConfigs(list) {
+  try { localStorage.setItem(LS_SAVED_CONFIGS_KEY, JSON.stringify(list)); } catch(e) {}
+}
+function getUserName() {
+  try { return localStorage.getItem(LS_USER_NAME_KEY) || ''; } catch(e) { return ''; }
+}
+function setUserName(name) {
+  try { localStorage.setItem(LS_USER_NAME_KEY, name); } catch(e) {}
+}
+
+function renderSavedList() {
+  const list = document.getElementById('saveCfgList');
+  list.innerHTML = '';
+  const configs = getSavedConfigs().slice().sort((a, b) =>
+    (b.savedAt || '').localeCompare(a.savedAt || ''));
+  const currentName = (document.getElementById('saveCfgName').value || '').trim().toLowerCase();
+
+  if (configs.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'save-config-empty';
+    empty.textContent = 'No saved bunk-ups yet.';
+    list.appendChild(empty);
+    return;
+  }
+
+  for (const cfg of configs) {
+    const item = document.createElement('div');
+    item.className = 'save-config-item';
+
+    const title = document.createElement('div');
+    title.className = 'save-config-item-title';
+    title.textContent = cfg.title || '(untitled)';
+    title.title = 'Load this bunk-up';
+    title.addEventListener('click', function() { loadSavedConfig(cfg.id); });
+
+    const by = document.createElement('div');
+    by.className = 'save-config-item-by';
+    by.textContent = '— ' + (cfg.name || 'anon');
+
+    item.appendChild(title);
+    item.appendChild(by);
+
+    if (currentName && currentName === (cfg.name || '').trim().toLowerCase()) {
+      const del = document.createElement('button');
+      del.className = 'save-config-item-delete';
+      del.textContent = 'Delete';
+      del.addEventListener('click', function() {
+        if (confirm('Delete "' + (cfg.title || 'untitled') + '"?')) {
+          deleteSavedConfig(cfg.id);
+        }
+      });
+      item.appendChild(del);
+    }
+
+    list.appendChild(item);
+  }
+}
+
+function saveCurrentBunkup() {
+  const name = document.getElementById('saveCfgName').value.trim();
+  const title = document.getElementById('saveCfgTitle').value.trim();
+  if (!name) {
+    alert('Please enter your name first.');
+    document.getElementById('saveCfgName').focus();
+    return;
+  }
+  if (!title) {
+    alert('Please enter a title.');
+    document.getElementById('saveCfgTitle').focus();
+    return;
+  }
+  setUserName(name);
+  const configs = getSavedConfigs();
+  configs.push({
+    id: uid(),
+    name: name,
+    title: title,
+    savedAt: new Date().toISOString(),
+    state: JSON.parse(JSON.stringify(state))
+  });
+  setSavedConfigs(configs);
+  renderSavedList();
+}
+
+function loadSavedConfig(id) {
+  const cfg = getSavedConfigs().find(c => c.id === id);
+  if (!cfg || !cfg.state) return;
+  state = JSON.parse(JSON.stringify(cfg.state));
+  if (!state.placements) state.placements = defaultPlacements();
+  save();
+  savePlacements();
+  document.getElementById('saveConfigModal').classList.remove('show');
+  renderSetup();
+  if (validate().ok) {
+    showPlay();
+  } else {
+    showSetup();
+  }
+}
+
+function deleteSavedConfig(id) {
+  setSavedConfigs(getSavedConfigs().filter(c => c.id !== id));
+  renderSavedList();
+}
+
+function openSaveConfigModal() {
+  document.getElementById('saveCfgName').value = getUserName();
+  document.getElementById('saveCfgTitle').value = todayLabel();
+  renderSavedList();
+  document.getElementById('saveConfigModal').classList.add('show');
+}
+
+document.getElementById('saveBunkupBtn').addEventListener('click', openSaveConfigModal);
+document.getElementById('saveCfgSubmit').addEventListener('click', saveCurrentBunkup);
+document.getElementById('saveCfgClose').addEventListener('click', function() {
+  document.getElementById('saveConfigModal').classList.remove('show');
+});
+document.getElementById('saveConfigModal').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('show');
+});
+document.getElementById('saveCfgName').addEventListener('input', renderSavedList);
 
 let audioCtx = null;
 let musicGain = null;
