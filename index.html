@@ -1247,6 +1247,71 @@
     margin-top: 22px;
     text-align: center;
   }
+  .bunkups-section { margin-top: 22px; }
+  .bunkups-hint {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 0.78rem;
+    color: var(--text-light);
+    margin-left: 8px;
+    letter-spacing: 0.02em;
+    text-transform: none;
+  }
+  .save-config-item-publish {
+    background: transparent;
+    border: 1px solid var(--copper);
+    color: var(--copper);
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 0.82rem;
+    cursor: pointer;
+    font-family: var(--font-body);
+    flex-shrink: 0;
+  }
+  .save-config-item-publish:hover {
+    background: var(--copper-pale);
+    color: var(--copper-dark);
+  }
+  .save-config-item-publish:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .signin-block {
+    margin-top: 14px;
+    padding: 14px 16px;
+    border: 1px dashed var(--copper-light);
+    border-radius: 8px;
+    background: rgba(240, 221, 212, 0.25);
+  }
+  .signin-prompt {
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 0.88rem;
+    color: var(--text-med);
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  .signin-form {
+    display: flex;
+    gap: 8px;
+  }
+  .signin-form input {
+    flex: 1;
+    min-width: 0;
+  }
+  .signin-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .signin-as {
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    color: var(--text-dark);
+  }
+  .signin-as strong { color: var(--navy); font-weight: 500; }
 
   .beach-bg {
     position: fixed;
@@ -1473,7 +1538,7 @@
 
 <div class="overlay save-config-overlay" id="saveConfigModal">
   <div class="card save-config-card">
-    <h2 class="save-config-heading">Save This Bunk-Up</h2>
+    <h2 class="save-config-heading">Bunk-ups</h2>
     <div class="save-config-form">
       <label for="saveCfgName">Your name</label>
       <input type="text" id="saveCfgName" placeholder="Jonathan" maxlength="40" autocomplete="off" />
@@ -1494,8 +1559,32 @@
         <button class="primary" id="saveCfgSubmit">Save</button>
       </div>
     </div>
-    <h3 class="save-config-subheading">Saved bunk-ups</h3>
-    <div class="save-config-list" id="saveCfgList"></div>
+
+    <div class="bunkups-section">
+      <h3 class="save-config-subheading">
+        Published <span class="bunkups-hint">visible to everyone</span>
+      </h3>
+      <div class="save-config-list" id="publishedList"></div>
+    </div>
+
+    <div class="bunkups-section">
+      <h3 class="save-config-subheading">
+        Unpublished <span class="bunkups-hint">only on this device</span>
+      </h3>
+      <div class="save-config-list" id="unpublishedList"></div>
+      <div class="signin-block" id="signinBlock">
+        <div class="signin-prompt" id="signinPrompt">Sign in with email to publish bunk-ups so everyone can see them.</div>
+        <div class="signin-form" id="signinForm">
+          <input type="email" id="signInEmail" placeholder="you@example.com" autocomplete="email" />
+          <button type="button" class="primary" id="sendMagicLinkBtn">Send magic link</button>
+        </div>
+        <div class="signin-status" id="signedInStatus" hidden>
+          <span class="signin-as">Signed in as <strong id="signedInEmail"></strong></span>
+          <button type="button" class="secondary-link" id="signOutBtn">Sign out</button>
+        </div>
+      </div>
+    </div>
+
     <div class="save-config-actions">
       <button class="secondary-link" id="saveCfgClose">Close</button>
     </div>
@@ -1503,7 +1592,31 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+import { getAuth, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyC6e6thrr7OtWV8TO7Obsn4ZzJTjed2xRE",
+  authDomain: "roomies-3f260.firebaseapp.com",
+  projectId: "roomies-3f260",
+  storageBucket: "roomies-3f260.firebasestorage.app",
+  messagingSenderId: "147444051245",
+  appId: "1:147444051245:web:9e9ab2826d1a78f13cf7a4"
+};
+
+let fbApp = null, fbAuth = null, fbDb = null;
+let firebaseReady = false;
+try {
+  fbApp = initializeApp(FIREBASE_CONFIG);
+  fbAuth = getAuth(fbApp);
+  fbDb = getFirestore(fbApp);
+  firebaseReady = true;
+} catch (e) {
+  console.warn('Firebase init failed; cloud features disabled.', e);
+}
+
 const AVATARS = [
   '👧','🧒','👦','👶','👩‍🦰','👨‍🦱','🧑',
   '🦸‍♀️','🦸‍♂️','🧚','🧙','🧜‍♀️','🧝','🧞',
@@ -2909,21 +3022,193 @@ function setUserName(name) {
   try { localStorage.setItem(LS_USER_NAME_KEY, name); } catch(e) {}
 }
 
-function renderSavedList() {
-  const list = document.getElementById('saveCfgList');
-  list.innerHTML = '';
-  const configs = getSavedConfigs().slice().sort((a, b) =>
-    (b.savedAt || '').localeCompare(a.savedAt || ''));
-  const currentName = (document.getElementById('saveCfgName').value || '').trim().toLowerCase();
+let currentUser = null;
+let publishedBunkups = [];
+let publishedUnsub = null;
 
-  if (configs.length === 0) {
+function updateAuthUi() {
+  const form = document.getElementById('signinForm');
+  const status = document.getElementById('signedInStatus');
+  const prompt = document.getElementById('signinPrompt');
+  const emailEl = document.getElementById('signedInEmail');
+  if (!form || !status) return;
+  if (currentUser) {
+    form.hidden = true;
+    if (prompt) prompt.style.display = 'none';
+    status.hidden = false;
+    if (emailEl) emailEl.textContent = currentUser.email || '';
+  } else {
+    form.hidden = false;
+    if (prompt) prompt.style.display = '';
+    status.hidden = true;
+  }
+}
+
+function startPublishedSubscription() {
+  if (!firebaseReady || publishedUnsub) return;
+  try {
+    const q = query(collection(fbDb, 'bunkups'), orderBy('publishedAt', 'desc'));
+    publishedUnsub = onSnapshot(q, function(snap) {
+      publishedBunkups = snap.docs.map(function(d) {
+        return { id: d.id, data: d.data() };
+      });
+      if (document.getElementById('saveConfigModal').classList.contains('show')) {
+        renderPublishedList();
+      }
+    }, function(err) {
+      console.warn('Firestore subscribe failed:', err);
+    });
+  } catch (e) {
+    console.warn('Firestore subscribe failed:', e);
+  }
+}
+
+async function sendMagicLink(email) {
+  if (!firebaseReady) { alert('Cloud sign-in unavailable.'); return; }
+  const cleanEmail = (email || '').trim();
+  if (!cleanEmail) { alert('Enter your email first.'); return; }
+  try {
+    const url = window.location.origin + window.location.pathname + '#play';
+    await sendSignInLinkToEmail(fbAuth, cleanEmail, {
+      url: url,
+      handleCodeInApp: true
+    });
+    localStorage.setItem('rm_email_for_signin', cleanEmail);
+    alert('Magic link sent to ' + cleanEmail + '. Click the link in your email to finish signing in.');
+  } catch (e) {
+    alert('Could not send the link: ' + (e.message || e));
+  }
+}
+
+async function completePendingSignIn() {
+  if (!firebaseReady) return;
+  if (!isSignInWithEmailLink(fbAuth, window.location.href)) return;
+  let email = localStorage.getItem('rm_email_for_signin');
+  if (!email) email = window.prompt('Confirm your email to finish signing in:');
+  if (!email) return;
+  try {
+    await signInWithEmailLink(fbAuth, email, window.location.href);
+    localStorage.removeItem('rm_email_for_signin');
+    history.replaceState({}, '', window.location.pathname + window.location.hash);
+  } catch (e) {
+    alert('Sign-in failed: ' + (e.message || e));
+  }
+}
+
+async function signOutUser() {
+  if (!firebaseReady || !fbAuth) return;
+  try { await signOut(fbAuth); } catch (e) {}
+}
+
+async function publishLocalBunkup(localId) {
+  if (!firebaseReady) { alert('Cloud unavailable.'); return; }
+  if (!currentUser) { alert('Sign in first.'); return; }
+  const list = getSavedConfigs();
+  const item = list.find(function(c) { return c.id === localId; });
+  if (!item) return;
+  try {
+    await addDoc(collection(fbDb, 'bunkups'), {
+      ownerEmail: currentUser.email,
+      ownerUid: currentUser.uid,
+      name: item.name || '',
+      title: item.title || '',
+      state: item.state || {},
+      publishedAt: serverTimestamp()
+    });
+    setSavedConfigs(list.filter(function(c) { return c.id !== localId; }));
+    renderSavedList();
+  } catch (e) {
+    alert('Publish failed: ' + (e.message || e));
+  }
+}
+
+async function deletePublishedBunkup(docId) {
+  if (!firebaseReady) return;
+  try {
+    await deleteDoc(doc(fbDb, 'bunkups', docId));
+  } catch (e) {
+    alert('Delete failed: ' + (e.message || e));
+  }
+}
+
+function loadPublishedConfig(docId) {
+  const entry = publishedBunkups.find(function(b) { return b.id === docId; });
+  if (!entry || !entry.data || !entry.data.state) return;
+  state = JSON.parse(JSON.stringify(entry.data.state));
+  if (!state.placements) state.placements = defaultPlacements();
+  save();
+  savePlacements();
+  document.getElementById('saveConfigModal').classList.remove('show');
+  renderSetup();
+  if (validate().ok) showPlay();
+  else showSetup();
+}
+
+function renderPublishedList() {
+  const list = document.getElementById('publishedList');
+  if (!list) return;
+  list.innerHTML = '';
+  if (!firebaseReady) {
+    const note = document.createElement('div');
+    note.className = 'save-config-empty';
+    note.textContent = 'Cloud features unavailable on this device.';
+    list.appendChild(note);
+    return;
+  }
+  if (publishedBunkups.length === 0) {
     const empty = document.createElement('div');
     empty.className = 'save-config-empty';
-    empty.textContent = 'No saved bunk-ups yet.';
+    empty.textContent = 'Nothing published yet.';
     list.appendChild(empty);
     return;
   }
+  for (const entry of publishedBunkups) {
+    const cfg = entry.data;
+    const item = document.createElement('div');
+    item.className = 'save-config-item';
 
+    const title = document.createElement('div');
+    title.className = 'save-config-item-title';
+    title.textContent = cfg.title || '(untitled)';
+    title.title = 'Load this bunk-up';
+    title.addEventListener('click', function() { loadPublishedConfig(entry.id); });
+
+    const by = document.createElement('div');
+    by.className = 'save-config-item-by';
+    by.textContent = '— ' + (cfg.ownerEmail || cfg.name || 'anon');
+
+    item.appendChild(title);
+    item.appendChild(by);
+
+    if (currentUser && currentUser.uid === cfg.ownerUid) {
+      const del = document.createElement('button');
+      del.className = 'save-config-item-delete';
+      del.textContent = 'Delete';
+      del.addEventListener('click', function() {
+        if (confirm('Delete "' + (cfg.title || 'untitled') + '" for everyone?')) {
+          deletePublishedBunkup(entry.id);
+        }
+      });
+      item.appendChild(del);
+    }
+    list.appendChild(item);
+  }
+}
+
+function renderUnpublishedList() {
+  const list = document.getElementById('unpublishedList');
+  if (!list) return;
+  list.innerHTML = '';
+  const configs = getSavedConfigs().slice().sort(function(a, b) {
+    return (b.savedAt || '').localeCompare(a.savedAt || '');
+  });
+  if (configs.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'save-config-empty';
+    empty.textContent = 'No unpublished bunk-ups.';
+    list.appendChild(empty);
+    return;
+  }
   for (const cfg of configs) {
     const item = document.createElement('div');
     item.className = 'save-config-item';
@@ -2941,20 +3226,44 @@ function renderSavedList() {
     item.appendChild(title);
     item.appendChild(by);
 
-    if (currentName && currentName === (cfg.name || '').trim().toLowerCase()) {
-      const del = document.createElement('button');
-      del.className = 'save-config-item-delete';
-      del.textContent = 'Delete';
-      del.addEventListener('click', function() {
-        if (confirm('Delete "' + (cfg.title || 'untitled') + '"?')) {
-          deleteSavedConfig(cfg.id);
-        }
-      });
-      item.appendChild(del);
+    if (firebaseReady) {
+      const pub = document.createElement('button');
+      pub.className = 'save-config-item-publish';
+      pub.textContent = 'Publish';
+      pub.disabled = !currentUser;
+      pub.title = currentUser ? 'Publish to everyone' : 'Sign in below to publish';
+      pub.addEventListener('click', function() { publishLocalBunkup(cfg.id); });
+      item.appendChild(pub);
     }
+
+    const del = document.createElement('button');
+    del.className = 'save-config-item-delete';
+    del.textContent = 'Delete';
+    del.addEventListener('click', function() {
+      if (confirm('Delete "' + (cfg.title || 'untitled') + '"?')) {
+        deleteSavedConfig(cfg.id);
+      }
+    });
+    item.appendChild(del);
 
     list.appendChild(item);
   }
+}
+
+function renderSavedList() {
+  renderPublishedList();
+  renderUnpublishedList();
+  updateAuthUi();
+}
+
+if (firebaseReady) {
+  onAuthStateChanged(fbAuth, function(user) {
+    currentUser = user || null;
+    updateAuthUi();
+    renderUnpublishedList();
+    renderPublishedList();
+  });
+  startPublishedSubscription();
 }
 
 function saveCurrentBunkup() {
@@ -3038,6 +3347,18 @@ document.getElementById('saveCfgDate').addEventListener('change', function() {
   const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
   document.getElementById('saveCfgTitle').value = formatDateLabel(d);
 });
+
+document.getElementById('sendMagicLinkBtn').addEventListener('click', function() {
+  const email = document.getElementById('signInEmail').value;
+  sendMagicLink(email);
+});
+document.getElementById('signInEmail').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    sendMagicLink(this.value);
+  }
+});
+document.getElementById('signOutBtn').addEventListener('click', signOutUser);
 
 let audioCtx = null;
 let musicGain = null;
@@ -3367,6 +3688,7 @@ function init() {
   renderBeachBg();
   load();
   renderSetup();
+  completePendingSignIn();
   if (window.location.hash === '#play') {
     const v = validate();
     if (v.ok) {
