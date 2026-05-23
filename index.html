@@ -472,25 +472,26 @@
     width: 36px;
     height: 36px;
     padding: 0;
-    font-size: 18px;
     line-height: 1;
+    color: var(--copper-light);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    filter: grayscale(1);
-    opacity: 0.4;
-    transition: filter 0.2s, opacity 0.2s, border-color 0.2s, background 0.2s;
+    opacity: 0.5;
+    transition: opacity 0.2s, border-color 0.2s, background 0.2s, color 0.2s;
   }
+  .music-toggle svg { width: 16px; height: 16px; display: block; }
   .music-toggle:hover {
-    opacity: 0.7;
+    opacity: 0.85;
     border-color: var(--copper-light);
+    color: var(--copper);
   }
   .music-toggle.playing {
-    filter: grayscale(0);
     opacity: 1;
     border-color: var(--copper);
     background: var(--copper-pale);
+    color: var(--copper);
   }
   .rail-divider {
     height: 1px;
@@ -526,6 +527,21 @@
     margin-top: auto;
     padding-top: 8px;
   }
+  .rail-link {
+    background: none;
+    border: none;
+    color: var(--copper);
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    padding: 2px 4px;
+    cursor: pointer;
+    text-align: center;
+  }
+  .rail-link:hover { color: var(--copper-dark); }
   .rail-controls {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -534,22 +550,23 @@
   .icon-btn {
     background: var(--cream);
     border: 1px solid var(--card-border);
-    color: var(--navy);
+    color: var(--copper);
     border-radius: 10px;
     width: 100%;
     height: 48px;
     padding: 0;
-    font-size: 22px;
     line-height: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    transition: border-color 0.15s, background 0.15s, color 0.15s, transform 0.1s;
   }
+  .icon-btn svg { width: 22px; height: 22px; display: block; }
   .icon-btn:hover {
     border-color: var(--copper-light);
     background: var(--copper-pale);
+    color: var(--copper-dark);
   }
   .icon-btn:active { transform: translateY(1px); }
 
@@ -1134,6 +1151,41 @@
     justify-content: center;
     margin-top: 6px;
   }
+  .title-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+  }
+  .title-input-wrap input[type="text"] { flex: 1; min-width: 0; }
+  .title-date-btn {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 7px;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    cursor: pointer;
+    color: var(--copper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .title-date-btn:hover { border-color: var(--copper-light); color: var(--copper-dark); }
+  .hidden-date {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    border: none;
+    padding: 0;
+    margin: 0;
+    pointer-events: none;
+  }
   .save-config-list {
     display: flex;
     flex-direction: column;
@@ -1341,6 +1393,7 @@
 
     <div class="btn-row">
       <button class="primary" id="beginBtn" disabled>Begin Bunk-Up</button>
+      <button class="secondary-link" id="homeBunkupsBtn">Saved bunk-ups</button>
       <button class="secondary-link" id="resetBtn">Reset to defaults</button>
     </div>
   </div>
@@ -1358,7 +1411,13 @@
     <aside class="right-rail">
       <div class="rail-header">
         <h2 class="rail-title">ROOMIES</h2>
-        <button class="music-toggle" id="musicBtn" aria-label="Toggle music" title="Music">🔊</button>
+        <button class="music-toggle" id="musicBtn" aria-label="Toggle music" title="Music">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+        </button>
       </div>
       <div class="rail-divider"></div>
       <div class="rail-chips" id="trayWrap">
@@ -1366,11 +1425,34 @@
         <div class="rail-count" id="trayCount"></div>
       </div>
       <div class="rail-divider"></div>
+      <button type="button" class="rail-link" id="bunkupsLink">Saved bunk-ups</button>
       <div class="rail-controls">
-        <button class="icon-btn" id="resetPlacementsBtn" aria-label="Reset placements" title="Reset placements">🔄</button>
-        <button class="icon-btn" id="editSetupBtn" aria-label="Back to setup" title="Back to setup">🏠</button>
-        <button class="icon-btn" id="saveBunkupBtn" aria-label="Save this bunk-up" title="Save this bunk-up">💾</button>
-        <button class="icon-btn" id="saveBtn" aria-label="Print summary" title="Print summary">🖨️</button>
+        <button class="icon-btn" id="resetPlacementsBtn" aria-label="Reset placements" title="Reset placements">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="1 4 1 10 7 10"></polyline>
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+          </svg>
+        </button>
+        <button class="icon-btn" id="editSetupBtn" aria-label="Back to setup" title="Back to setup">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </button>
+        <button class="icon-btn" id="saveBunkupBtn" aria-label="Save this bunk-up" title="Save this bunk-up">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+          </svg>
+        </button>
+        <button class="icon-btn" id="saveBtn" aria-label="Print summary" title="Print summary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+        </button>
       </div>
     </aside>
   </div>
@@ -1396,7 +1478,18 @@
       <label for="saveCfgName">Your name</label>
       <input type="text" id="saveCfgName" placeholder="Jonathan" maxlength="40" autocomplete="off" />
       <label for="saveCfgTitle">Title</label>
-      <input type="text" id="saveCfgTitle" maxlength="80" autocomplete="off" />
+      <div class="title-input-wrap">
+        <input type="text" id="saveCfgTitle" maxlength="80" autocomplete="off" />
+        <button type="button" class="title-date-btn" id="saveCfgDateBtn" title="Pick a date" aria-label="Pick a date">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </button>
+        <input type="date" id="saveCfgDate" class="hidden-date" />
+      </div>
       <div class="save-config-submit">
         <button class="primary" id="saveCfgSubmit">Save</button>
       </div>
@@ -2683,12 +2776,12 @@ document.getElementById('resetPlacementsBtn').addEventListener('click', function
   resetPlacements();
 });
 
-function todayLabel() {
-  const d = new Date();
+function formatDateLabel(d) {
   const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   return days[d.getDay()] + ' ' + months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
 }
+function todayLabel() { return formatDateLabel(new Date()); }
 
 function ageOf(person) {
   return (person.age === '' || person.age === undefined || person.age === null) ? '?' : person.age;
@@ -2914,6 +3007,8 @@ function openSaveConfigModal() {
 }
 
 document.getElementById('saveBunkupBtn').addEventListener('click', openSaveConfigModal);
+document.getElementById('bunkupsLink').addEventListener('click', openSaveConfigModal);
+document.getElementById('homeBunkupsBtn').addEventListener('click', openSaveConfigModal);
 document.getElementById('saveCfgSubmit').addEventListener('click', saveCurrentBunkup);
 document.getElementById('saveCfgClose').addEventListener('click', function() {
   document.getElementById('saveConfigModal').classList.remove('show');
@@ -2922,6 +3017,22 @@ document.getElementById('saveConfigModal').addEventListener('click', function(e)
   if (e.target === this) this.classList.remove('show');
 });
 document.getElementById('saveCfgName').addEventListener('input', renderSavedList);
+
+document.getElementById('saveCfgDateBtn').addEventListener('click', function() {
+  const d = document.getElementById('saveCfgDate');
+  if (typeof d.showPicker === 'function') {
+    try { d.showPicker(); return; } catch(_) {}
+  }
+  d.focus();
+  d.click();
+});
+
+document.getElementById('saveCfgDate').addEventListener('change', function() {
+  if (!this.value) return;
+  const parts = this.value.split('-');
+  const d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+  document.getElementById('saveCfgTitle').value = formatDateLabel(d);
+});
 
 let audioCtx = null;
 let musicGain = null;
