@@ -1823,20 +1823,25 @@ function defaults() {
   };
 }
 
-function makeHouse(name, n) {
+function makeHouse(name) {
   return {
     id: uid(),
     name: name,
     rooms: [
-      makeRoom('Bedroom 1'),
-      makeRoom('Bedroom 2'),
-      makeRoom('Bedroom 3')
+      makeRoom('Bedroom 1', 1, 1),
+      makeRoom('Bedroom 2', 1, 0),
+      makeRoom('Bedroom 3', 1, 0)
     ]
   };
 }
 
-function makeRoom(name) {
-  return { id: uid(), name: name, beds: 2, cribs: 0 };
+function makeRoom(name, beds, cribs) {
+  return {
+    id: uid(),
+    name: name,
+    beds: beds === undefined ? 1 : beds,
+    cribs: cribs === undefined ? 0 : cribs
+  };
 }
 
 function load() {
