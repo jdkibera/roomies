@@ -1278,28 +1278,50 @@
     cursor: not-allowed;
   }
   .signin-block {
-    margin-top: 14px;
-    padding: 14px 16px;
-    border: 1px dashed var(--copper-light);
+    margin-top: 12px;
+    padding: 10px 14px;
+    border: 1px solid var(--card-border);
     border-radius: 8px;
-    background: rgba(240, 221, 212, 0.25);
+    background: var(--cream);
   }
   .signin-prompt {
     font-family: var(--font-body);
     font-style: italic;
-    font-size: 0.88rem;
+    font-size: 0.82rem;
     color: var(--text-med);
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     text-align: center;
   }
   .signin-form {
     display: flex;
     gap: 8px;
+    justify-content: center;
+    align-items: center;
   }
   .signin-form input {
-    flex: 1;
+    flex: 0 1 240px;
     min-width: 0;
+    padding: 7px 10px;
+    font-size: 0.88rem;
   }
+  .signin-send {
+    background: transparent;
+    border: 1px solid var(--copper);
+    color: var(--copper);
+    border-radius: 7px;
+    padding: 7px 14px;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .signin-send:hover {
+    background: var(--copper-pale);
+    color: var(--copper-dark);
+  }
+  .signin-send:disabled { opacity: 0.4; cursor: not-allowed; }
   .signin-status {
     display: flex;
     align-items: center;
@@ -1573,10 +1595,10 @@
       </h3>
       <div class="save-config-list" id="unpublishedList"></div>
       <div class="signin-block" id="signinBlock">
-        <div class="signin-prompt" id="signinPrompt">Sign in with email to publish bunk-ups so everyone can see them.</div>
+        <div class="signin-prompt" id="signinPrompt">Sign in to publish so everyone can see them.</div>
         <div class="signin-form" id="signinForm">
           <input type="email" id="signInEmail" placeholder="you@example.com" autocomplete="email" />
-          <button type="button" class="primary" id="sendMagicLinkBtn">Send magic link</button>
+          <button type="button" class="signin-send" id="sendMagicLinkBtn">Send magic link</button>
         </div>
         <div class="signin-status" id="signedInStatus" hidden>
           <span class="signin-as">Signed in as <strong id="signedInEmail"></strong></span>
