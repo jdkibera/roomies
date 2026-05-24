@@ -396,21 +396,39 @@
   .avatar-opt.selected { background: var(--copper-pale); border-color: var(--copper); }
 
   .validation-msg {
-    font-size: 0.85rem;
+    font-size: 0.95rem;
     font-style: italic;
     color: var(--text-med);
-    margin-bottom: 12px;
     min-height: 1.2em;
     transition: color 0.15s;
+    flex: 1;
+    text-align: left;
   }
   .validation-msg.ready { color: #5C8A5A; }
   .validation-msg.error { color: #B05040; }
 
   .btn-row {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 10px;
+    gap: 16px;
+    margin-top: 4px;
+  }
+  .icon-btn-link {
+    background: transparent;
+    border: none;
+    color: var(--copper);
+    padding: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: color 0.15s, background 0.15s;
+  }
+  .icon-btn-link:hover {
+    color: var(--copper-dark);
+    background: var(--copper-pale);
   }
 
   .divider {
@@ -1127,10 +1145,10 @@
     gap: 12px;
   }
 
-  .save-config-card {
-    max-width: 620px;
+  .overlay .save-config-card {
+    max-width: 1000px;
     text-align: left;
-    padding: 32px 40px;
+    padding: 30px 38px;
   }
   .save-config-heading {
     font-family: var(--font-heading);
@@ -1145,14 +1163,16 @@
     font-weight: 500;
     font-size: 1.15rem;
     color: var(--navy);
-    margin: 26px 0 12px 0;
+    margin: 22px 0 10px 0;
     letter-spacing: 0.04em;
+    text-align: left;
   }
   .save-config-form {
-    display: grid;
-    grid-template-columns: 120px 1fr;
-    gap: 10px 12px;
+    display: flex;
+    flex-direction: row;
     align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
   }
   .save-config-form label {
     font-family: var(--font-body);
@@ -1161,14 +1181,16 @@
     color: var(--text-light);
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    text-align: right;
+    white-space: nowrap;
   }
-  .save-config-submit {
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: center;
-    margin-top: 6px;
+  .save-config-form input[type="text"] { width: 300px; }
+  .save-config-form input:disabled,
+  .save-config-form button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
+  .save-config-form .title-input-wrap input[type="text"] { width: 300px; }
+  .save-config-form .primary { padding: 9px 22px; font-size: 0.95rem; }
   .title-input-wrap {
     display: flex;
     align-items: center;
@@ -1233,6 +1255,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    text-align: left;
   }
   .save-config-item-title:hover { color: var(--copper); }
   .save-config-item-by {
@@ -1295,25 +1318,15 @@
     opacity: 0.4;
     cursor: not-allowed;
   }
-  .signin-block {
-    margin-top: 12px;
-    padding: 10px 14px;
-    border: 1px solid var(--card-border);
-    border-radius: 8px;
-    background: var(--cream);
-  }
-  .signin-prompt {
-    font-family: var(--font-body);
-    font-style: italic;
-    font-size: 0.82rem;
-    color: var(--text-med);
-    margin-bottom: 8px;
-    text-align: center;
+  .signin-bar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 22px;
+    min-height: 32px;
   }
   .signin-form {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
+    display: inline-flex;
     align-items: center;
   }
   .google-signin {
@@ -1341,17 +1354,17 @@
   .google-signin svg { flex-shrink: 0; }
   .google-signin:disabled { opacity: 0.5; cursor: not-allowed; }
   .signin-status {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+    gap: 14px;
   }
   .signin-as {
     font-family: var(--font-body);
-    font-size: 0.92rem;
-    color: var(--text-dark);
+    font-style: italic;
+    font-size: 0.88rem;
+    color: var(--text-med);
   }
-  .signin-as strong { color: var(--navy); font-weight: 500; }
+  .signin-as strong { color: var(--navy); font-weight: 500; font-style: normal; }
 
   .beach-bg {
     position: fixed;
@@ -1436,9 +1449,6 @@
     <h2>Who rooms with whom?</h2>
 
     <div class="section-card" id="adventureCard">
-      <div class="section-header">
-        <span class="section-title">Adventure</span>
-      </div>
       <div class="adventure-fields">
         <div class="field-row">
           <label class="field-label" for="advTitle">Title</label>
@@ -1446,10 +1456,9 @@
         </div>
         <div class="field-row">
           <label class="field-label" for="advSubtitle">Subtitle</label>
-          <input type="text" id="advSubtitle" placeholder="A summer adventure featuring …" maxlength="100" autocomplete="off" />
+          <input type="text" id="advSubtitle" placeholder="Leave blank to auto-generate from player names." maxlength="100" autocomplete="off" />
         </div>
       </div>
-      <p class="help-text" style="margin-top:8px;">Leave subtitle blank to auto-generate from player names.</p>
     </div>
 
     <div class="section-card" id="housesCard">
@@ -1465,12 +1474,6 @@
     </div>
 
     <div class="section-card" id="roommatesCard">
-      <div class="section-header">
-        <span class="section-title">Roommates</span>
-      </div>
-
-      <div class="divider" style="margin-top:0;"></div>
-
       <div class="section-header sub-inline" style="margin-bottom:10px;">
         <span class="sub-title">Kids</span>
         <div class="stepper" id="kidsStepper" data-key="kids">
@@ -1494,12 +1497,16 @@
       <div id="auPairsList"></div>
     </div>
 
-    <div class="validation-msg" id="validationMsg"></div>
-
     <div class="btn-row">
       <button class="primary" id="beginBtn" disabled>Begin Bunk-Up</button>
+      <div class="validation-msg" id="validationMsg"></div>
       <button class="secondary-link" id="homeBunkupsBtn">Saved bunk-ups</button>
-      <button class="secondary-link" id="resetBtn">Reset to defaults</button>
+      <button class="icon-btn-link" id="resetBtn" title="Reset to defaults" aria-label="Reset to defaults">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+          <polyline points="1 4 1 10 7 10"></polyline>
+          <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+        </svg>
+      </button>
     </div>
   </div>
 </div>
@@ -1595,9 +1602,7 @@
         </button>
         <input type="date" id="saveCfgDate" class="hidden-date" />
       </div>
-      <div class="save-config-submit">
-        <button class="primary" id="saveCfgSubmit">Save</button>
-      </div>
+      <button type="button" class="primary" id="saveCfgSubmit">Save</button>
     </div>
 
     <div class="bunkups-section">
@@ -1612,23 +1617,23 @@
         Unpublished <span class="bunkups-hint">only on this device</span>
       </h3>
       <div class="save-config-list" id="unpublishedList"></div>
-      <div class="signin-block" id="signinBlock">
-        <div class="signin-prompt" id="signinPrompt">Sign in to publish so everyone can see them.</div>
-        <div class="signin-form" id="signinForm">
-          <button type="button" class="google-signin" id="googleSignInBtn">
-            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
-              <path fill="#4285F4" d="M16.51 8.18c0-.55-.05-1.08-.14-1.59H8.93v3.02h4.25c-.18 1-.74 1.84-1.57 2.4v2h2.54c1.49-1.37 2.36-3.39 2.36-5.83z"/>
-              <path fill="#34A853" d="M8.93 16.5c2.13 0 3.91-.7 5.21-1.91l-2.54-2c-.7.47-1.6.75-2.67.75-2.05 0-3.78-1.38-4.4-3.24H1.9v2.07c1.29 2.55 3.93 4.33 7.03 4.33z"/>
-              <path fill="#FBBC05" d="M4.53 10.1c-.16-.47-.25-.97-.25-1.5s.09-1.03.25-1.5V5.03H1.9c-.55 1.07-.86 2.27-.86 3.57s.31 2.5.86 3.57l2.63-2.07z"/>
-              <path fill="#EA4335" d="M8.93 3.56c1.16 0 2.2.4 3.02 1.18l2.25-2.25C12.83 1.19 11.06.5 8.93.5 5.83.5 3.19 2.28 1.9 4.83l2.63 2.07c.62-1.86 2.35-3.24 4.4-3.24z"/>
-            </svg>
-            Sign in with Google
-          </button>
-        </div>
-        <div class="signin-status" id="signedInStatus" hidden>
-          <span class="signin-as">Signed in as <strong id="signedInEmail"></strong></span>
-          <button type="button" class="secondary-link" id="signOutBtn">Sign out</button>
-        </div>
+    </div>
+
+    <div class="signin-bar">
+      <div class="signin-form" id="signinForm">
+        <button type="button" class="google-signin" id="googleSignInBtn">
+          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+            <path fill="#4285F4" d="M16.51 8.18c0-.55-.05-1.08-.14-1.59H8.93v3.02h4.25c-.18 1-.74 1.84-1.57 2.4v2h2.54c1.49-1.37 2.36-3.39 2.36-5.83z"/>
+            <path fill="#34A853" d="M8.93 16.5c2.13 0 3.91-.7 5.21-1.91l-2.54-2c-.7.47-1.6.75-2.67.75-2.05 0-3.78-1.38-4.4-3.24H1.9v2.07c1.29 2.55 3.93 4.33 7.03 4.33z"/>
+            <path fill="#FBBC05" d="M4.53 10.1c-.16-.47-.25-.97-.25-1.5s.09-1.03.25-1.5V5.03H1.9c-.55 1.07-.86 2.27-.86 3.57s.31 2.5.86 3.57l2.63-2.07z"/>
+            <path fill="#EA4335" d="M8.93 3.56c1.16 0 2.2.4 3.02 1.18l2.25-2.25C12.83 1.19 11.06.5 8.93.5 5.83.5 3.19 2.28 1.9 4.83l2.63 2.07c.62-1.86 2.35-3.24 4.4-3.24z"/>
+          </svg>
+          Sign in with Google
+        </button>
+      </div>
+      <div class="signin-status" id="signedInStatus" hidden>
+        <span class="signin-as">Signed in as <strong id="signedInEmail"></strong></span>
+        <button type="button" class="secondary-link" id="signOutBtn">Sign out</button>
       </div>
     </div>
 
@@ -3059,22 +3064,43 @@ function setUserName(name) {
 let currentUser = null;
 let publishedBunkups = [];
 let publishedUnsub = null;
+let currentSavedRefId = null; // local UID or Firestore doc id of the most recent save
 
 function updateAuthUi() {
   const form = document.getElementById('signinForm');
   const status = document.getElementById('signedInStatus');
-  const prompt = document.getElementById('signinPrompt');
   const emailEl = document.getElementById('signedInEmail');
   if (!form || !status) return;
   if (currentUser) {
     form.hidden = true;
-    if (prompt) prompt.style.display = 'none';
     status.hidden = false;
     if (emailEl) emailEl.textContent = currentUser.email || '';
   } else {
     form.hidden = false;
-    if (prompt) prompt.style.display = '';
     status.hidden = true;
+  }
+}
+
+function syncSavedRef() {
+  if (!currentSavedRefId) return;
+  const inLocal = getSavedConfigs().some(function(c) { return c.id === currentSavedRefId; });
+  const inPublished = publishedBunkups.some(function(b) { return b.id === currentSavedRefId; });
+  if (!inLocal && !inPublished) currentSavedRefId = null;
+}
+
+function updateSaveFormState() {
+  const locked = currentSavedRefId !== null;
+  const nameI = document.getElementById('saveCfgName');
+  const titleI = document.getElementById('saveCfgTitle');
+  const dateBtn = document.getElementById('saveCfgDateBtn');
+  const submitBtn = document.getElementById('saveCfgSubmit');
+  if (!nameI) return;
+  nameI.disabled = locked;
+  titleI.disabled = locked;
+  if (dateBtn) dateBtn.disabled = locked;
+  if (submitBtn) {
+    submitBtn.disabled = locked;
+    submitBtn.textContent = locked ? 'Saved' : 'Save';
   }
 }
 
@@ -3121,7 +3147,7 @@ async function publishLocalBunkup(localId) {
   const item = list.find(function(c) { return c.id === localId; });
   if (!item) return;
   try {
-    await addDoc(collection(fbDb, 'bunkups'), {
+    const docRef = await addDoc(collection(fbDb, 'bunkups'), {
       ownerEmail: currentUser.email,
       ownerUid: currentUser.uid,
       name: item.name || '',
@@ -3130,6 +3156,7 @@ async function publishLocalBunkup(localId) {
       publishedAt: serverTimestamp()
     });
     setSavedConfigs(list.filter(function(c) { return c.id !== localId; }));
+    if (currentSavedRefId === localId) currentSavedRefId = docRef.id;
     renderSavedList();
   } catch (e) {
     alert('Publish failed: ' + (e.message || e));
@@ -3189,7 +3216,8 @@ function renderPublishedList() {
 
     const by = document.createElement('div');
     by.className = 'save-config-item-by';
-    by.textContent = '— ' + (cfg.ownerEmail || cfg.name || 'anon');
+    const author = [cfg.name, cfg.ownerEmail].filter(Boolean).join(' · ');
+    by.textContent = '— ' + (author || 'anon');
 
     item.appendChild(title);
     item.appendChild(by);
@@ -3268,6 +3296,8 @@ function renderSavedList() {
   renderPublishedList();
   renderUnpublishedList();
   updateAuthUi();
+  syncSavedRef();
+  updateSaveFormState();
 }
 
 if (firebaseReady) {
@@ -3281,6 +3311,7 @@ if (firebaseReady) {
 }
 
 function saveCurrentBunkup() {
+  if (currentSavedRefId) return;
   const name = document.getElementById('saveCfgName').value.trim();
   const title = document.getElementById('saveCfgTitle').value.trim();
   if (!name) {
@@ -3294,15 +3325,17 @@ function saveCurrentBunkup() {
     return;
   }
   setUserName(name);
+  const newId = uid();
   const configs = getSavedConfigs();
   configs.push({
-    id: uid(),
+    id: newId,
     name: name,
     title: title,
     savedAt: new Date().toISOString(),
     state: JSON.parse(JSON.stringify(state))
   });
   setSavedConfigs(configs);
+  currentSavedRefId = newId;
   renderSavedList();
 }
 
@@ -3328,8 +3361,17 @@ function deleteSavedConfig(id) {
 }
 
 function openSaveConfigModal() {
-  document.getElementById('saveCfgName').value = getUserName();
-  document.getElementById('saveCfgTitle').value = todayLabel();
+  syncSavedRef();
+  if (currentSavedRefId) {
+    const local = getSavedConfigs().find(function(c) { return c.id === currentSavedRefId; });
+    const pubEntry = publishedBunkups.find(function(b) { return b.id === currentSavedRefId; });
+    const item = local || (pubEntry && pubEntry.data) || null;
+    document.getElementById('saveCfgName').value = (item && item.name) || getUserName();
+    document.getElementById('saveCfgTitle').value = (item && item.title) || todayLabel();
+  } else {
+    document.getElementById('saveCfgName').value = getUserName();
+    document.getElementById('saveCfgTitle').value = todayLabel();
+  }
   renderSavedList();
   document.getElementById('saveConfigModal').classList.add('show');
 }
