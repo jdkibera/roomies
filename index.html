@@ -234,6 +234,16 @@
     align-items: center;
     gap: 6px;
   }
+  .stepper-label {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-style: italic;
+    color: var(--text-light);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-right: 2px;
+    white-space: nowrap;
+  }
   .stepper-btn {
     width: 28px; height: 28px;
     background: var(--card-bg);
@@ -268,10 +278,14 @@
   .house-name-row {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     margin-bottom: 10px;
   }
-  .house-name-row input { flex: 1; }
+  .house-name-row input {
+    width: 250px;
+    flex: 0 0 auto;
+  }
+  .house-name-row .stepper { margin-left: auto; }
 
   .room-block {
     border-left: 2px solid var(--line-soft);
@@ -288,18 +302,22 @@
   }
   .room-row {
     display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 6px;
-    margin-bottom: 10px;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 8px;
+    flex-wrap: nowrap;
   }
-  .room-row input[type="text"] { width: 100%; min-width: 100px; }
+  .room-row input[type="text"] {
+    width: 150px;
+    flex: 0 0 auto;
+    min-width: 0;
+  }
   .room-controls {
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 16px;
     flex-wrap: nowrap;
-    padding-left: 4px;
   }
   .furniture-pair {
     display: inline-flex;
@@ -2249,14 +2267,21 @@ function closeAvatarPopover() {
   activeAvatarTarget = null;
 }
 
-function makeStepper(attrName, id, val, min, max, small) {
+function makeStepper(attrName, id, val, min, max, opts) {
+  opts = opts || {};
+  const small = !!opts.small;
+  const label = opts.label;
   const d = document.createElement('div');
   d.className = 'stepper';
   d.dataset[attrName] = id;
-  const s = small ? ' style="width:24px;height:24px"' : '';
-  d.innerHTML = `<button class="stepper-btn" data-dir="-1"${s}${val<=min?' disabled':''}>−</button>`
-    + `<span class="stepper-val"${small?' style="font-size:0.9rem"':''}>${val}</span>`
-    + `<button class="stepper-btn" data-dir="1"${s}${val>=max?' disabled':''}>+</button>`;
+  const btnStyle = small ? ' style="width:24px;height:24px"' : '';
+  const valStyle = small ? ' style="font-size:0.9rem"' : '';
+  let html = '';
+  if (label) html += `<span class="stepper-label">${label}</span>`;
+  html += `<span class="stepper-val"${valStyle}>${val}</span>`;
+  html += `<button class="stepper-btn" data-dir="1"${btnStyle}${val>=max?' disabled':''}>+</button>`;
+  html += `<button class="stepper-btn" data-dir="-1"${btnStyle}${val<=min?' disabled':''}>−</button>`;
+  d.innerHTML = html;
   return d;
 }
 
@@ -2279,15 +2304,11 @@ function renderHouses() {
     ni.dataset.field = 'houseName';
     ni.dataset.houseId = house.id;
     nameRow.appendChild(ni);
+    nameRow.appendChild(makeStepper('roomStepper', house.id, house.rooms.length, 1, 8, { label: 'Bedrooms' }));
     hb.appendChild(nameRow);
 
     const rb = document.createElement('div');
     rb.className = 'room-block';
-    const rsh = document.createElement('div');
-    rsh.className = 'room-sub-header';
-    rsh.innerHTML = '<span class="sub-title" style="font-size:0.88rem">Bedrooms</span>';
-    rsh.appendChild(makeStepper('roomStepper', house.id, house.rooms.length, 1, 8, false));
-    rb.appendChild(rsh);
 
     house.rooms.forEach((room, ri) => {
       const rr = document.createElement('div');
@@ -2305,24 +2326,8 @@ function renderHouses() {
 
       const furn = document.createElement('div');
       furn.className = 'room-controls';
-
-      const bedsPair = document.createElement('span');
-      bedsPair.className = 'furniture-pair';
-      bedsPair.appendChild(makeStepper('bedStepper', room.id, room.beds, 0, 4, true));
-      const bedsLblEl = document.createElement('span');
-      bedsLblEl.className = 'furniture-label';
-      bedsLblEl.textContent = 'Beds';
-      bedsPair.appendChild(bedsLblEl);
-      furn.appendChild(bedsPair);
-
-      const cribsPair = document.createElement('span');
-      cribsPair.className = 'furniture-pair';
-      cribsPair.appendChild(makeStepper('cribStepper', room.id, room.cribs, 0, 3, true));
-      const cribsLblEl = document.createElement('span');
-      cribsLblEl.className = 'furniture-label';
-      cribsLblEl.textContent = 'Cribs';
-      cribsPair.appendChild(cribsLblEl);
-      furn.appendChild(cribsPair);
+      furn.appendChild(makeStepper('bedStepper', room.id, room.beds, 0, 4, { small: true, label: 'Beds' }));
+      furn.appendChild(makeStepper('cribStepper', room.id, room.cribs, 0, 3, { small: true, label: 'Cribs' }));
 
       rr.appendChild(furn);
       rb.appendChild(rr);
