@@ -2023,6 +2023,10 @@ function save() {
   try {
     localStorage.setItem(LS_KEY, JSON.stringify(state));
   } catch(e) {}
+  if (!loadingConfig && currentSavedRefId !== null) {
+    currentSavedRefId = null;
+    if (typeof updateSaveFormState === 'function') updateSaveFormState();
+  }
 }
 
 function defaultPlacements() {
@@ -2048,6 +2052,10 @@ function savePlacements() {
   try {
     localStorage.setItem(LS_PLACEMENTS_KEY, JSON.stringify(state.placements));
   } catch(e) {}
+  if (!loadingConfig && currentSavedRefId !== null) {
+    currentSavedRefId = null;
+    if (typeof updateSaveFormState === 'function') updateSaveFormState();
+  }
 }
 
 function resetPlacements() {
@@ -2731,7 +2739,6 @@ function showSetup() {
 }
 
 function showPlay() {
-  save();
   document.getElementById('setup').classList.remove('show');
   document.getElementById('play').hidden = false;
   renderPlay();
@@ -3065,6 +3072,7 @@ let currentUser = null;
 let publishedBunkups = [];
 let publishedUnsub = null;
 let currentSavedRefId = null; // local UID or Firestore doc id of the most recent save
+let loadingConfig = false; // suppress unlock during loadSavedConfig/loadPublishedConfig
 
 function updateAuthUi() {
   const form = document.getElementById('signinForm');
@@ -3175,10 +3183,13 @@ async function deletePublishedBunkup(docId) {
 function loadPublishedConfig(docId) {
   const entry = publishedBunkups.find(function(b) { return b.id === docId; });
   if (!entry || !entry.data || !entry.data.state) return;
+  loadingConfig = true;
   state = JSON.parse(JSON.stringify(entry.data.state));
   if (!state.placements) state.placements = defaultPlacements();
   save();
   savePlacements();
+  loadingConfig = false;
+  currentSavedRefId = docId;
   document.getElementById('saveConfigModal').classList.remove('show');
   renderSetup();
   if (validate().ok) showPlay();
@@ -3342,10 +3353,13 @@ function saveCurrentBunkup() {
 function loadSavedConfig(id) {
   const cfg = getSavedConfigs().find(c => c.id === id);
   if (!cfg || !cfg.state) return;
+  loadingConfig = true;
   state = JSON.parse(JSON.stringify(cfg.state));
   if (!state.placements) state.placements = defaultPlacements();
   save();
   savePlacements();
+  loadingConfig = false;
+  currentSavedRefId = id;
   document.getElementById('saveConfigModal').classList.remove('show');
   renderSetup();
   if (validate().ok) {
