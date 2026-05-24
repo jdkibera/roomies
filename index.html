@@ -1298,30 +1298,30 @@
     justify-content: center;
     align-items: center;
   }
-  .signin-form input {
-    flex: 0 1 240px;
-    min-width: 0;
-    padding: 7px 10px;
-    font-size: 0.88rem;
-  }
-  .signin-send {
-    background: transparent;
-    border: 1px solid var(--copper);
-    color: var(--copper);
-    border-radius: 7px;
-    padding: 7px 14px;
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    letter-spacing: 0.03em;
+  .google-signin {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #FFFFFF;
+    border: 1px solid #DADCE0;
+    color: #3C4043;
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
     cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    transition: box-shadow 0.15s, background 0.15s, border-color 0.15s;
   }
-  .signin-send:hover {
-    background: var(--copper-pale);
-    color: var(--copper-dark);
+  .google-signin:hover {
+    background: #F8F9FA;
+    border-color: #C8CCD0;
+    box-shadow: 0 1px 3px rgba(60,64,67,0.16);
   }
-  .signin-send:disabled { opacity: 0.4; cursor: not-allowed; }
+  .google-signin:active { background: #F1F3F4; }
+  .google-signin svg { flex-shrink: 0; }
+  .google-signin:disabled { opacity: 0.5; cursor: not-allowed; }
   .signin-status {
     display: flex;
     align-items: center;
@@ -1597,8 +1597,15 @@
       <div class="signin-block" id="signinBlock">
         <div class="signin-prompt" id="signinPrompt">Sign in to publish so everyone can see them.</div>
         <div class="signin-form" id="signinForm">
-          <input type="email" id="signInEmail" placeholder="you@example.com" autocomplete="email" />
-          <button type="button" class="signin-send" id="sendMagicLinkBtn">Send magic link</button>
+          <button type="button" class="google-signin" id="googleSignInBtn">
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+              <path fill="#4285F4" d="M16.51 8.18c0-.55-.05-1.08-.14-1.59H8.93v3.02h4.25c-.18 1-.74 1.84-1.57 2.4v2h2.54c1.49-1.37 2.36-3.39 2.36-5.83z"/>
+              <path fill="#34A853" d="M8.93 16.5c2.13 0 3.91-.7 5.21-1.91l-2.54-2c-.7.47-1.6.75-2.67.75-2.05 0-3.78-1.38-4.4-3.24H1.9v2.07c1.29 2.55 3.93 4.33 7.03 4.33z"/>
+              <path fill="#FBBC05" d="M4.53 10.1c-.16-.47-.25-.97-.25-1.5s.09-1.03.25-1.5V5.03H1.9c-.55 1.07-.86 2.27-.86 3.57s.31 2.5.86 3.57l2.63-2.07z"/>
+              <path fill="#EA4335" d="M8.93 3.56c1.16 0 2.2.4 3.02 1.18l2.25-2.25C12.83 1.19 11.06.5 8.93.5 5.83.5 3.19 2.28 1.9 4.83l2.63 2.07c.62-1.86 2.35-3.24 4.4-3.24z"/>
+            </svg>
+            Sign in with Google
+          </button>
         </div>
         <div class="signin-status" id="signedInStatus" hidden>
           <span class="signin-as">Signed in as <strong id="signedInEmail"></strong></span>
@@ -1616,7 +1623,7 @@
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-import { getAuth, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
 const FIREBASE_CONFIG = {
@@ -3085,34 +3092,14 @@ function startPublishedSubscription() {
   }
 }
 
-async function sendMagicLink(email) {
+async function signInWithGoogle() {
   if (!firebaseReady) { alert('Cloud sign-in unavailable.'); return; }
-  const cleanEmail = (email || '').trim();
-  if (!cleanEmail) { alert('Enter your email first.'); return; }
   try {
-    const url = window.location.origin + window.location.pathname + '#play';
-    await sendSignInLinkToEmail(fbAuth, cleanEmail, {
-      url: url,
-      handleCodeInApp: true
-    });
-    localStorage.setItem('rm_email_for_signin', cleanEmail);
-    alert('Magic link sent to ' + cleanEmail + '. Click the link in your email to finish signing in.');
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(fbAuth, provider);
   } catch (e) {
-    alert('Could not send the link: ' + (e.message || e));
-  }
-}
-
-async function completePendingSignIn() {
-  if (!firebaseReady) return;
-  if (!isSignInWithEmailLink(fbAuth, window.location.href)) return;
-  let email = localStorage.getItem('rm_email_for_signin');
-  if (!email) email = window.prompt('Confirm your email to finish signing in:');
-  if (!email) return;
-  try {
-    await signInWithEmailLink(fbAuth, email, window.location.href);
-    localStorage.removeItem('rm_email_for_signin');
-    history.replaceState({}, '', window.location.pathname + window.location.hash);
-  } catch (e) {
+    if (e && e.code === 'auth/popup-closed-by-user') return;
+    if (e && e.code === 'auth/cancelled-popup-request') return;
     alert('Sign-in failed: ' + (e.message || e));
   }
 }
@@ -3370,16 +3357,7 @@ document.getElementById('saveCfgDate').addEventListener('change', function() {
   document.getElementById('saveCfgTitle').value = formatDateLabel(d);
 });
 
-document.getElementById('sendMagicLinkBtn').addEventListener('click', function() {
-  const email = document.getElementById('signInEmail').value;
-  sendMagicLink(email);
-});
-document.getElementById('signInEmail').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    sendMagicLink(this.value);
-  }
-});
+document.getElementById('googleSignInBtn').addEventListener('click', signInWithGoogle);
 document.getElementById('signOutBtn').addEventListener('click', signOutUser);
 
 let audioCtx = null;
@@ -3710,7 +3688,6 @@ function init() {
   renderBeachBg();
   load();
   renderSetup();
-  completePendingSignIn();
   if (window.location.hash === '#play') {
     const v = validate();
     if (v.ok) {
